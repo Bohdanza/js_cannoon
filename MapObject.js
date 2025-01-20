@@ -2,10 +2,10 @@ class MapObject
 {
     mapX; mapY;
     screenX; screenY;
-    mySpritesheet;
+    mySprite;
     passable;
 
-    constructor(scene, spriteName, mapX, mapY, screenX, screenY, passable)
+    constructor(scene, spriteAnimationName, spriteName, mapX, mapY, screenX, screenY, passable)
     {
         if(this.constructor==MapObject)
             throw new Error("Abstract class can't be instantiated");
@@ -16,7 +16,8 @@ class MapObject
         this.screenX=screenX;
         this.screenY=screenY;
 
-        this.mySpritesheet=scene.add.sprite(screenX, screenY, spriteName);
+        this.mySprite=scene.add.sprite(screenX, screenY, spriteName).setScale(10);
+        this.mySprite.play(spriteAnimationName);
 
         this.passable=passable;
     }
