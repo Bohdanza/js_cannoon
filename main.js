@@ -1,12 +1,19 @@
-const GLOBALSPRITESCALE=1;
+const GLOBALSPRITESCALE = 4;
+
+document.body.style.overflow = 'hidden';
 
 var config = 
 {
     renderType: Phaser.WEBGL,
-    width: 800,
-    height: 600,
-    canvasStyle: "top: 0px; left: 0px; position: absolute",
     antialias: false,
+    canvasStyle: "top: 0px; position: absolute;",
+    scale: 
+    {
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        mode: Phaser.Scale.FIT,
+        width: 1920,
+        height: 1080,
+    },
     fps: 
     {
         target: 60,
@@ -19,8 +26,6 @@ var config =
         update: update
     }
 };
-
-var game = new Phaser.Game(config);
 
 function preload ()
 {
@@ -62,3 +67,5 @@ function update ()
 {
 
 }
+
+var game = new Phaser.Game(config);

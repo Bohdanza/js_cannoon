@@ -16,8 +16,10 @@ class MapObject
         this.screenX=screenX;
         this.screenY=screenY;
 
-        this.mySprite=scene.add.sprite(screenX, screenY, spriteName).setScale(10);
+        this.mySprite=scene.add.sprite(screenX, screenY, spriteName);
         this.mySprite.play(spriteAnimationName);
+
+        this.mySprite.setScale(GLOBALSPRITESCALE);   
 
         this.passable=passable;
     }
