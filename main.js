@@ -32,6 +32,7 @@ function preload ()
     this.load.image('test', 'Content/testimage.png');
     this.load.spritesheet('ground', 'Content/ground.png', {frameWidth: 8, frameHeight: 8});
     grn=this.load.spritesheet('water', 'Content/water.png', {frameWidth: 8, frameHeight: 8});
+    grn=this.load.spritesheet('rock', 'Content/rock.png', {frameWidth: 8, frameHeight: 12});
 }
 
 function create ()
@@ -56,11 +57,19 @@ function create ()
         }
     );
 
-    new Ground(this, 0, 0, 100, 100);
+    this.anims.create
+    (
+        {
+            key:'rock',
+            frames: this.anims.generateFrameNumbers('rock', {frames:[0]}),
+            frameRate: 8,
+            repeat:-1
+        }
+    );
 
-    //this.add.image(100, 100, 'test').setDepth(0);
-    
-    //this.add.image(40, 100, 'test').setDepth(1);
+    new Water(this, 100, 100, 100, 100);
+    new Ground(this, 150, 100, 150, 100);
+    new Rock(this, 200, 100, 200, 100);
 }
 
 function update ()

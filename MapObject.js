@@ -17,6 +17,8 @@ class MapObject
         this.screenY=screenY;
 
         this.mySprite=scene.add.sprite(screenX, screenY, spriteName);
+        this.mySprite.displayOriginX=this.mySprite.width/2;
+        this.mySprite.displayOriginY=this.mySprite.height;
         this.mySprite.play(spriteAnimationName);
 
         this.mySprite.setScale(GLOBALSPRITESCALE);   
