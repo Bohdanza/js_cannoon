@@ -28,7 +28,7 @@ class World
             this.terrainArray.push(arr1);
         }
 
-        var startPointsArr=[], startPointsNumber=3;
+        var startPointsArr=[], startPointsNumber=5;
 
         for(let i=0; i<startPointsNumber; i++)
         {
