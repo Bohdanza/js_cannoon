@@ -30,4 +30,10 @@ class MapObject
     {
         throw new Error("Abstract class can't be instantiated");
     }
+
+    delete()
+    {
+        this.mySprite.destroy(true);
+     //   this.destroy(true);
+    }
 }
