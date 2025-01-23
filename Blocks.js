@@ -18,6 +18,8 @@ class Rock extends MapBlock
 {
     constructor(scene, mapX, mapY, screenX, screenY)
     {
-        super(scene, 'rock', 'rock', mapX, mapY, screenX, screenY, true);
+        let animn = 'rock'+Math.floor(Math.random()*3.9999).toString();
+
+        super(scene, animn, 'rock', mapX, mapY, screenX, screenY, true);
     }
 }

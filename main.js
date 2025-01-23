@@ -60,16 +60,44 @@ function create ()
     this.anims.create
     (
         {
-            key:'rock',
+            key:'rock0',
             frames: this.anims.generateFrameNumbers('rock', {frames:[0]}),
             frameRate: 8,
             repeat:-1
         }
     );
+    
+    this.anims.create
+    (
+        {
+            key:'rock1',
+            frames: this.anims.generateFrameNumbers('rock', {frames:[1]}),
+            frameRate: 8,
+            repeat:-1
+        }
+    );
+    
+    this.anims.create
+    (
+        {
+            key:'rock2',
+            frames: this.anims.generateFrameNumbers('rock', {frames:[2]}),
+            frameRate: 8,
+            repeat:-1
+        }
+    );
+    
+    this.anims.create
+    (
+        {
+            key:'rock3',
+            frames: this.anims.generateFrameNumbers('rock', {frames:[3]}),
+            frameRate: 8,
+            repeat:-1
+        }
+    );
 
-    new Water(this, 100, 100, 100, 100);
-    new Ground(this, 150, 100, 150, 100);
-    new Rock(this, 200, 100, 200, 100);
+    new World(50, 33, this);
 }
 
 function update ()
