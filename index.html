@@ -2,14 +2,24 @@
 <html>
     <head></head>
     <body style="margin: 0; padding: 0;">
-        <script src="libs\phaser.js"></script>
+      <style media='screen' type='text/css'>
+        @font-face 
+        {
+          font-family: mainFont;
+          src: url('Content/fonts/cannongfont.ttf');
+          font-weight:400;
+          font-weight:normal;
+        }
+      </style>
+      <div style="font-family:mainFont; position:absolute; left:-1000px; visibility:hidden;">.</div>
+
+      <script src="libs\phaser.js"></script>
       <!--  <script src="libs\requirejs.js"></script> -->
+      <script src="MapObject.js"></script>
+      <script src="MapBlock.js"></script>
+      <script src="Blocks.js"></script>
+      <script src="World.js"></script>
 
-        <script src="MapObject.js"></script>
-        <script src="MapBlock.js"></script>
-        <script src="Blocks.js"></script>
-        <script src="World.js"></script>
-
-        <script src="main.js"></script>
+      <script src="main.js"></script>
     </body>
 </html>

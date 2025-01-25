@@ -29,7 +29,6 @@ var config =
 
 function preload ()
 {
-    this.load.image('test', 'Content/testimage.png');
     this.load.spritesheet('ground', 'Content/ground.png', {frameWidth: 8, frameHeight: 8});
     this.load.spritesheet('water', 'Content/water.png', {frameWidth: 8, frameHeight: 8});
     this.load.spritesheet('rock', 'Content/rock.png', {frameWidth: 8, frameHeight: 12});
@@ -54,7 +53,7 @@ function create ()
     (
         {
             key:'water',
-            frames: this.anims.generateFrameNumbers('water', {frames:[0,1,2]}),
+            frames: this.anims.generateFrameNumbers('water', {frames:[0,1,2,3,4,5]}),
             frameRate: 8,
             repeat:-1
         }
@@ -117,6 +116,15 @@ function update ()
 function randomInt(min, max)
 {
     return Math.floor(Math.random()*(max-min)+min);
+}
+
+function loadFont(name, url) {
+    var newFont = new FontFace(name, `url(${url})`);
+    newFont.load().then(function (loaded) {
+        document.fonts.add(loaded);
+    }).catch(function (error) {
+        throw error;
+    });
 }
 
 var game = new Phaser.Game(config);

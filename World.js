@@ -2,10 +2,12 @@
 class World
 {
     width; height;
-    overlayImage;
+    #overlayImage;
     terrainArray=[];
     unitArray=[];
     collisionArray=[];
+    resource=156;
+    #resourceTextField;
 
     //scene is essentially used to add new gameobjects to it.
     //May be implemented by world extending a scene, but that's not a big difference
@@ -16,12 +18,16 @@ class World
         
         this.#fillArrays(scene);
         this.#generateTerrain(scene);
-            
-        this.overlayImage=scene.add.image(0, 0, 'menu_overlay');  
-        this.overlayImage.displayOriginX=0;
-        this.overlayImage.displayOriginY=0;
-        this.overlayImage.setScale(GLOBALSPRITESCALE);
-        this.overlayImage.setDepth(100);
+        
+        this.#overlayImage=scene.add.image(0, 0, 'menu_overlay');  
+        this.#overlayImage.displayOriginX=0;
+        this.#overlayImage.displayOriginY=0;
+        this.#overlayImage.setScale(GLOBALSPRITESCALE);
+        this.#overlayImage.setDepth(100);
+        
+        this.#resourceTextField=scene.add.text(1670, 1036, this.resource.toString(), {fontFamily: "mainFont", fontSize: "48px"});
+        this.#resourceTextField.displayOriginY=this.#resourceTextField.height/2;
+        this.#resourceTextField.setDepth(101);
     }
 
     #fillArrays(scene)
@@ -106,6 +112,12 @@ class World
 
         for(let i=startY; i<endY; i++)
         {
+            if(i==endY-1)
+            {
+                currentLeft=randomInt(maxWidth/4, maxWidth/3);
+                currentRight=randomInt(maxWidth/4, maxWidth/3);
+            }
+
             for(let j=Math.max(0, centerX-currentLeft); j<=Math.min(this.width-1, centerX+currentRight); j++)
             {
                 if(this.terrainArray[j][i] instanceof Rock)
