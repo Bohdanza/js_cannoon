@@ -32,18 +32,33 @@ function preload ()
     this.load.spritesheet('ground', 'Content/ground.png', {frameWidth: 8, frameHeight: 8});
     this.load.spritesheet('water', 'Content/water.png', {frameWidth: 8, frameHeight: 8});
     this.load.spritesheet('rock', 'Content/rock.png', {frameWidth: 8, frameHeight: 12});
+    this.load.spritesheet('eye', 'Content/eye.png', {frameWidth: 6, frameHeight: 8});
+    this.load.spritesheet('eye_selected', 'Content/eye_select.png', {frameWidth: 8, frameHeight: 10});
 
     this.load.image('menu_overlay', 'Content/menu_overlay.png');
 }
 
-function create ()
+function create()
 {
+    this.input.mouse.disableContextMenu();
+
     for(let i=0; i<10; i++)
         this.anims.create
         (
             {
                 key:'ground'+i.toString(),
                 frames: this.anims.generateFrameNumbers('ground', {frames:[i]}),
+                frameRate: 8,
+                repeat:-1
+            }
+        );
+        
+    for(let i=0; i<4; i++)
+        this.anims.create
+        (
+            {
+                key:'rock'+i.toString(),
+                frames: this.anims.generateFrameNumbers('rock', {frames:[i]}),
                 frameRate: 8,
                 repeat:-1
             }
@@ -62,8 +77,8 @@ function create ()
     this.anims.create
     (
         {
-            key:'rock0',
-            frames: this.anims.generateFrameNumbers('rock', {frames:[0]}),
+            key:'eye_idle',
+            frames: this.anims.generateFrameNumbers('eye', {frames:[0, 1, 2]}),
             frameRate: 8,
             repeat:-1
         }
@@ -72,28 +87,8 @@ function create ()
     this.anims.create
     (
         {
-            key:'rock1',
-            frames: this.anims.generateFrameNumbers('rock', {frames:[1]}),
-            frameRate: 8,
-            repeat:-1
-        }
-    );
-    
-    this.anims.create
-    (
-        {
-            key:'rock2',
-            frames: this.anims.generateFrameNumbers('rock', {frames:[2]}),
-            frameRate: 8,
-            repeat:-1
-        }
-    );
-    
-    this.anims.create
-    (
-        {
-            key:'rock3',
-            frames: this.anims.generateFrameNumbers('rock', {frames:[3]}),
+            key:'eye_selected_idle',
+            frames: this.anims.generateFrameNumbers('eye_selected', {frames:[0,1,2]}),
             frameRate: 8,
             repeat:-1
         }

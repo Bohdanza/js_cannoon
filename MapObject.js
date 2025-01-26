@@ -24,6 +24,17 @@ class MapObject
         this.passable=passable;
     }
 
+    changeCoords(mapX, mapY, screenX, screenY)
+    {
+        this.mapX=mapX;
+        this.mapY=mapY;
+        this.screenX=screenX;
+        this.screenY=screenY;
+
+        this.mySprite.x=screenX;
+        this.mySprite.y=screenY;
+    }
+
     update()
     {
         throw new Error("Abstract class can't be instantiated");
@@ -32,7 +43,7 @@ class MapObject
     activate(scene)
     {
         this.mySprite=scene.add.sprite(this.screenX, this.screenY, this.mySpriteName);
-        this.mySprite.setDepth(this.mapY);
+        this.mySprite.setDepth(this.mapY*2);
         this.mySprite.displayOriginX=this.mySprite.width/2;
         this.mySprite.displayOriginY=this.mySprite.height;
         this.mySprite.play(this.mySpriteAnimName);

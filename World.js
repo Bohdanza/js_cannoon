@@ -19,6 +19,17 @@ class World
         this.#fillArrays(scene);
         this.#generateTerrain(scene);
         
+        this.#changeUnit(scene, ~~(this.width/2), 31, new EyeUnit(scene, ~~(this.width/2), 31, 
+        this.#mapToScreen(~~(this.width/2), 31)[0], 
+        this.#mapToScreen(31, 31)[1]));
+
+        this.#menuInit(scene);
+
+        scene.input.on('pointerup', this.#upclick(this), scene);
+    }
+
+    #menuInit(scene)
+    {    
         this.#overlayImage=scene.add.image(0, 0, 'menu_overlay');  
         this.#overlayImage.displayOriginX=0;
         this.#overlayImage.displayOriginY=0;
@@ -136,8 +147,13 @@ class World
     {
         return [x*32+16+GLOBALSPRITESCALE, y*32+32+GLOBALSPRITESCALE];
     }
+    
+    #screenToMap(x, y)
+    {
+        return [~~((x-GLOBALSPRITESCALE)/32), ~~((y-GLOBALSPRITESCALE)/32)];
+    }
 
-    #changeBlock(scene, x, y, newBlock)
+    #changeBlock(scene, x, y, newBlock, array)
     {
         if(x>=this.width || y>=this.height || x<0 ||y<0)
             return;
@@ -149,11 +165,55 @@ class World
         this.#updateCollision(x, y);
     }
 
+    #changeUnit(scene, x, y, newUnit)
+    {
+        if(x>=this.width || y>=this.height || x<0 ||y<0)
+            return;
+
+        if(this.unitArray[x][y]!=null)
+            this.unitArray[x][y].delete();
+
+        this.unitArray[x][y]=newUnit;
+        newUnit.activate(scene);
+
+        this.#updateCollision(x, y);
+    }
+
     #updateCollision(x, y)
     {
         this.collisionArray[x][y]=this.terrainArray[x][y].passable;
         
         if(this.unitArray[x][y]!=null)
             this.collisionArray[x][y]=this.collisionArray[x][y]&&this.unitArray[x][y].passable;
+    }
+
+    #upclick(world)
+    {
+        return function(pointer)
+        {
+            if(!pointer.leftButtonDown())
+            {
+                if(pointer.x>=GLOBALSPRITESCALE && pointer.y>=GLOBALSPRITESCALE &&
+                    pointer.x<=GLOBALSPRITESCALE+world.width*8*GLOBALSPRITESCALE &&
+                    pointer.y<=GLOBALSPRITESCALE+world.height*8*GLOBALSPRITESCALE)
+                {
+                    console.log("LEFT IS DOWN");
+                    let mpcr=world.#screenToMap(pointer.x, pointer.y);
+                    world.useOnMapUnit(mpcr[0], mpcr[1], 
+                        function(requiredScene)
+                        { 
+                            return function(unitToApply) { unitToApply.selectUnit(requiredScene); };
+                        }(this));
+                }
+            }
+        }
+    }
+
+    useOnMapUnit(x, y, functionToUse)
+    {
+        if(this.unitArray[x][y]==null)
+            return;
+        else
+            functionToUse(this.unitArray[x][y]);
     }
 }
