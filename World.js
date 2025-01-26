@@ -8,6 +8,7 @@ class World
     collisionArray=[];
     resource=156;
     #resourceTextField;
+    selectedUnit=null;
 
     //scene is essentially used to add new gameobjects to it.
     //May be implemented by world extending a scene, but that's not a big difference
@@ -25,7 +26,7 @@ class World
 
         this.#menuInit(scene);
 
-        scene.input.on('pointerup', this.#upclick(this), scene);
+        scene.input.on('pointerdown', this.#upclick(this), scene);
     }
 
     #menuInit(scene)
@@ -191,29 +192,37 @@ class World
     {
         return function(pointer)
         {
-            if(!pointer.leftButtonDown())
+            if(pointer.leftButtonDown())
             {
                 if(pointer.x>=GLOBALSPRITESCALE && pointer.y>=GLOBALSPRITESCALE &&
                     pointer.x<=GLOBALSPRITESCALE+world.width*8*GLOBALSPRITESCALE &&
                     pointer.y<=GLOBALSPRITESCALE+world.height*8*GLOBALSPRITESCALE)
                 {
-                    console.log("LEFT IS DOWN");
                     let mpcr=world.#screenToMap(pointer.x, pointer.y);
-                    world.useOnMapUnit(mpcr[0], mpcr[1], 
+                    
+                    world.useOnMapUnit(world.selectedUnit, 
+                        function(requiredScene)
+                        { 
+                            return function(unitToApply) { unitToApply.deselectUnit(requiredScene); };
+                        }(this));
+                    
+                    world.useOnMapUnit(world.unitArray[mpcr[0]][mpcr[1]], 
                         function(requiredScene)
                         { 
                             return function(unitToApply) { unitToApply.selectUnit(requiredScene); };
                         }(this));
+
+                    world.selectedUnit=world.unitArray[mpcr[0]][mpcr[1]];
                 }
             }
         }
     }
 
-    useOnMapUnit(x, y, functionToUse)
+    useOnMapUnit(unitToUseOn, functionToUse)
     {
-        if(this.unitArray[x][y]==null)
+        if(unitToUseOn==null)
             return;
         else
-            functionToUse(this.unitArray[x][y]);
+            functionToUse(unitToUseOn);
     }
 }
