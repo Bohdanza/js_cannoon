@@ -9,6 +9,8 @@ class World
     resource=156;
     #resourceTextField;
     selectedUnit=null;
+    friendlyUnits=[];
+    enemyUnits=[];
 
     //scene is essentially used to add new gameobjects to it.
     //May be implemented by world extending a scene, but that's not a big difference
@@ -22,7 +24,7 @@ class World
         
         this.#changeUnit(scene, ~~(this.width/2), 31, new EyeUnit(scene, ~~(this.width/2), 31, 
         this.#mapToScreen(~~(this.width/2), 31)[0], 
-        this.#mapToScreen(31, 31)[1]));
+        this.#mapToScreen(31, 31)[1], this));
 
         this.#menuInit(scene);
 

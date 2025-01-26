@@ -1,7 +1,7 @@
-class EyeUnit extends MapUnit
+class EyeUnit extends FriendlyUnit
 {
-    constructor(scene, mapX, mapY, screenX, screenY)
+    constructor(scene, mapX, mapY, screenX, screenY, world)
     {
-        super(scene, "eye", mapX, mapY, screenX, screenY, false, "eye_selected", 50, 50, 5, 0, 10);
+        super(scene, "eye", mapX, mapY, screenX, screenY, false, "eye_selected", 50, 50, 5, 0, 10, world);
     }
 }

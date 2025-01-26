@@ -10,8 +10,11 @@ class MapUnit extends MapObject
     speed;
     power;
     sight;
+    friendly;
+    myWorld;
 
-    constructor(scene, spriteName, mapX, mapY, screenX, screenY, passable, selectionFrameName, maxHP, currentHP, speed, power, sight)
+    constructor(scene, spriteName, mapX, mapY, screenX, screenY, passable, selectionFrameName, maxHP, currentHP, speed, power, sight,
+        friendly, world)
     {
         super(scene, spriteName+"_idle", spriteName, mapX, mapY, screenX, screenY, passable);
 
@@ -24,6 +27,8 @@ class MapUnit extends MapObject
         this.speed=speed;
         this.power=power;
         this.sight=sight;
+        this.friendly=friendly;
+        this.myWorld=world;
     }
 
     activate(scene)
