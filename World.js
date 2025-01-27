@@ -1,3 +1,5 @@
+const GLOBALSPRITESCALE = 4;
+
 /**Esentially the main class for gameplay purposes. Does all the heavy lifting, should be updated  */
 class World
 {
@@ -11,6 +13,7 @@ class World
     selectedUnit=null;
     friendlyUnits=[];
     enemyUnits=[];
+    existingUnits=[];
 
     //scene is essentially used to add new gameobjects to it.
     //May be implemented by world extending a scene, but that's not a big difference
@@ -22,13 +25,20 @@ class World
         this.#fillArrays(scene);
         this.#generateTerrain(scene);
         
-        this.#changeUnit(scene, ~~(this.width/2), 31, new EyeUnit(scene, ~~(this.width/2), 31, 
-        this.#mapToScreen(~~(this.width/2), 31)[0], 
-        this.#mapToScreen(31, 31)[1], this));
+        let neu=new EyeUnit(scene, ~~(this.width/2), 31, this.mapToScreen(~~(this.width/2), 31)[0], this.mapToScreen(31, 31)[1], this);
+        this.existingUnits.push(neu);
+        this.changeUnit(scene, ~~(this.width/2), 31, neu);
+        neu.activate(scene);
 
         this.#menuInit(scene);
 
         scene.input.on('pointerdown', this.#upclick(this), scene);
+    }
+
+    update()
+    {
+        for(let i=0; i<this.existingUnits.length; i++)
+            this.existingUnits[i].update();
     }
 
     #menuInit(scene)
@@ -54,7 +64,7 @@ class World
 
             for(let j=0; j<this.height; j++)
             {
-                let rcc=this.#mapToScreen(i, j);
+                let rcc=this.mapToScreen(i, j);
                 let rc=new Rock(scene, i, j, rcc[0], rcc[1]);
                 rc.activate(scene);
 
@@ -68,7 +78,7 @@ class World
             this.collisionArray.push(arr3);
         }
     }
-
+    
     #generateTerrain (scene) 
     {
         var startPointsNumber=5;
@@ -100,14 +110,14 @@ class World
         let x=startX;
         for(let y=startY; y<=endY; y++)
         {
-            let pr=this.#mapToScreen(x+xstep, y);
+            let pr=this.mapToScreen(x+xstep, y);
             this.#changeBlock(scene, x+xstep, y, new Ground(scene, x+xstep, y, pr[0], pr[1]));
 
             for(let i=0; i<=distrVal[y-startY]; i++)
             {
-                pr=this.#mapToScreen(x, y);
+                pr=this.mapToScreen(x, y);
                 this.#changeBlock(scene, x, y, new Ground(scene, x, y, pr[0], pr[1]));
-                pr=this.#mapToScreen(x, y+1);
+                pr=this.mapToScreen(x, y+1);
                 this.#changeBlock(scene, x, y+1, new Ground(scene, x, y+1, pr[0], pr[1]));
                 
                 x+=xstep;
@@ -136,7 +146,7 @@ class World
             {
                 if(this.terrainArray[j][i] instanceof Rock)
                 {
-                    let prc=this.#mapToScreen(j, i);
+                    let prc=this.mapToScreen(j, i);
                     this.#changeBlock(scene, j, i, new Water(scene, j, i, prc[0], prc[1]));
                 }
             }
@@ -146,12 +156,12 @@ class World
         }
     }
 
-    #mapToScreen(x, y)
+    mapToScreen(x, y)
     {
         return [x*32+16+GLOBALSPRITESCALE, y*32+32+GLOBALSPRITESCALE];
     }
     
-    #screenToMap(x, y)
+    screenToMap(x, y)
     {
         return [~~((x-GLOBALSPRITESCALE)/32), ~~((y-GLOBALSPRITESCALE)/32)];
     }
@@ -168,7 +178,7 @@ class World
         this.#updateCollision(x, y);
     }
 
-    #changeUnit(scene, x, y, newUnit)
+    changeUnit(scene, x, y, newUnit)
     {
         if(x>=this.width || y>=this.height || x<0 ||y<0)
             return;
@@ -177,9 +187,36 @@ class World
             this.unitArray[x][y].delete();
 
         this.unitArray[x][y]=newUnit;
-        newUnit.activate(scene);
 
         this.#updateCollision(x, y);
+    }
+
+    deleteUnit(scene, x, y)
+    {
+        if(x>=this.width || y>=this.height || x<0 ||y<0)
+            return;
+
+        if(this.unitArray[x][y]!=null)
+        {
+            this.existingUnits.splice(this.existingUnits.indexOf(this.unitArray[x][y]), 1);
+            this.unitArray[x][y].delete();
+            this.unitArray[x][y]=null;
+        }
+
+        this.#updateCollision(x, y);
+    }
+
+    transferUnit(x1, y1, x2, y2)
+    {
+        if(x1>=this.width || y1>=this.height || x1<0 ||y1<0||
+            x2>=this.width || y2>=this.height || x2<0 ||y2<0)
+            return;
+
+        this.unitArray[x2][y2]=this.unitArray[x1][y1];
+        this.unitArray[x1][y1]=null;
+
+        this.#updateCollision(x1, y1);
+        this.#updateCollision(x2, y2);
     }
 
     #updateCollision(x, y)
@@ -200,7 +237,7 @@ class World
                     pointer.x<=GLOBALSPRITESCALE+world.width*8*GLOBALSPRITESCALE &&
                     pointer.y<=GLOBALSPRITESCALE+world.height*8*GLOBALSPRITESCALE)
                 {
-                    let mpcr=world.#screenToMap(pointer.x, pointer.y);
+                    let mpcr=world.screenToMap(pointer.x, pointer.y);
                     
                     world.useOnMapUnit(world.selectedUnit, 
                         function(requiredScene)
@@ -227,4 +264,87 @@ class World
         else
             functionToUse(unitToUseOn);
     }
+
+    #collisionCleanup()
+    {
+        for(let i=0; i<this.width; i++)
+            for(let j=0; j<this.height; j++)
+                this.collisionArray[i][j]=!(!this.collisionArray[i][j]);
+    }
+
+    findPath(startX, startY, endX, endY, maxPathLength)
+    {
+        if(this.collisionArray[endX][endY]==0||ManhattanDistance(startX, startY, endX, endY)>maxPathLength)
+            return [false, 0, []];
+
+        this.#collisionCleanup();
+
+        let currentFrontier=[];
+        currentFrontier.push([startX+1, startY]);
+        currentFrontier.push([startX, startY+1]);
+        currentFrontier.push([startX-1, startY]);
+        currentFrontier.push([startX, startY-1]);
+
+        this.collisionArray[startX][startY]=2;
+
+        let clf=currentFrontier.length;
+
+        for(let i=0; i<maxPathLength&&clf>0; i++)
+        {
+            let newFrontier=[];
+            
+            for(let j=0; j<clf; j++)
+            {
+                if(currentFrontier[j][0]>=0&&currentFrontier[j][0]<this.width&&
+                    currentFrontier[j][1]>=0&&currentFrontier[j][1]<this.height&&
+                    this.collisionArray[currentFrontier[j][0]][currentFrontier[j][1]]==1)
+                {
+                    this.collisionArray[currentFrontier[j][0]][currentFrontier[j][1]]=i+3;
+                    
+                    if(currentFrontier[j][0]==endX
+                        &&currentFrontier[j][1]==endY)
+                    {
+                        return [true, i, 
+                            this.#restorePath(startX, startY, endX, endY)];
+                    }
+                
+                    newFrontier.push([currentFrontier[j][0]+1, currentFrontier[j][1]]);
+                    newFrontier.push([currentFrontier[j][0], currentFrontier[j][1]+1]);
+                    newFrontier.push([currentFrontier[j][0]-1, currentFrontier[j][1]]);
+                    newFrontier.push([currentFrontier[j][0], currentFrontier[j][1]-1]);
+                }
+            }
+
+            currentFrontier=newFrontier;
+            clf=currentFrontier.length; 
+        }
+
+        return [false, 0, []];
+    }
+
+    #restorePath(startX, startY, endX, endY)
+    {   
+        //TODO
+        let result=[];
+        let x=endX, y=endY;
+
+        while(x!=startX||y!=startY)
+        {
+            result.push([x, y]);
+
+            let nx=(x+1>=0&&x+1<this.width&&(this.collisionArray[x+1][y]==this.collisionArray[x][y]-1)&&1)+
+            (x-1>=0&&x-1<this.width&&(this.collisionArray[x-1][y]==this.collisionArray[x][y]-1)&&-1);
+            y+=(y+1>=0&&y+1<this.height&&(this.collisionArray[x][y+1]==this.collisionArray[x][y]-1)&&1)+
+            (y-1>=0&&y-1<this.height&&(this.collisionArray[x][y-1]==this.collisionArray[x][y]-1)&&-1);
+
+            x+=nx;
+        }
+
+        return result;
+    }
+}
+
+function ManhattanDistance(x1, y1, x2, y2)   
+{
+    return Math.abs(x1-x2)+Math.abs(y1-y2);
 }
