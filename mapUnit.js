@@ -40,7 +40,7 @@ class MapUnit extends MapObject
     }
 
     #movingToPlace=false;
-    #movingAnimSpeed=1;
+    #movingAnimSpeed=5;
 
     #updateQueuedPlaces()
     {
@@ -54,26 +54,22 @@ class MapUnit extends MapObject
 
             let xdf1=Math.sign(this.queuedPlaces[this.queuedPlaces.length-1][0]-this.screenX);
             let ydf1=Math.sign(this.queuedPlaces[this.queuedPlaces.length-1][1]-this.screenY);
-            let xb1=false, yb1=false;
 
-            if(xdf!=xdf)
-            {
-                xb1=true;
+            if(xdf!=xdf1)
                 this.screenX=this.queuedPlaces[this.queuedPlaces.length-1][0];
-            }
 
-            if(ydf!=ydf)
-            {
-                yb1=true;
+            if(ydf!=ydf1)
                 this.screenY=this.queuedPlaces[this.queuedPlaces.length-1][1];
-            }
 
-            if(yb1&&xb1)
+            if(this.screenX==this.queuedPlaces[this.queuedPlaces.length-1][0]&&
+                this.screenY==this.queuedPlaces[this.queuedPlaces.length-1][1])
             {
                 this.mySprite.setDepth(this.queuedPlaces[this.queuedPlaces.length-1][1]*2+1);
                 this.#movingToPlace=false;
                 this.queuedPlaces.pop();
             }
+
+            this.updateSpriteCoords();
         }
 
         if(!this.#movingToPlace && this.queuedPlaces.length>0)
@@ -81,6 +77,13 @@ class MapUnit extends MapObject
             this.#movingToPlace=true;
             this.mySprite.setDepth(Math.max(this.mySprite.depth, this.queuedPlaces[this.queuedPlaces.length-1][1]*2+1));
         }
+    }
+
+    updateSpriteCoords()
+    {
+        super.updateSpriteCoords();
+        this.selectionFrame.x=this.screenX;
+        this.selectionFrame.y=this.screenY;
     }
 
     activate(scene)
@@ -139,6 +142,9 @@ class MapUnit extends MapObject
 
     walkTo(scene, world, x, y)
     {
+        if(this.queuedPlaces.length>0)
+            return;
+
         let rs=world.findPath(this.mapX, this.mapY, x, y, this.speed);
 
         if(rs[0])
@@ -150,6 +156,7 @@ class MapUnit extends MapObject
 
             this.actionPoints-=rs[1];
             world.transferUnit(this.mapX, this.mapY, x, y);
+            this.mapX=x; this.mapY=y;
             this.#movingToPlace=true;
         }
     }

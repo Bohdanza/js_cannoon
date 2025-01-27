@@ -35,6 +35,12 @@ class MapObject
         this.mySprite.y=screenY;
     }
 
+    updateSpriteCoords()
+    {
+        this.mySprite.x=this.screenX;
+        this.mySprite.y=this.screenY;
+    }
+
     update()
     {
         throw new Error("Abstract class can't be instantiated");

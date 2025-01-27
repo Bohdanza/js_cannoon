@@ -324,21 +324,30 @@ class World
 
     #restorePath(startX, startY, endX, endY)
     {   
-        //TODO
+        console.log("RESTORATION STARTED")
+        
         let result=[];
         let x=endX, y=endY;
 
         while(x!=startX||y!=startY)
         {
             result.push([x, y]);
-
-            let nx=(x+1>=0&&x+1<this.width&&(this.collisionArray[x+1][y]==this.collisionArray[x][y]-1)&&1)+
-            (x-1>=0&&x-1<this.width&&(this.collisionArray[x-1][y]==this.collisionArray[x][y]-1)&&-1);
-            y+=(y+1>=0&&y+1<this.height&&(this.collisionArray[x][y+1]==this.collisionArray[x][y]-1)&&1)+
-            (y-1>=0&&y-1<this.height&&(this.collisionArray[x][y-1]==this.collisionArray[x][y]-1)&&-1);
-
-            x+=nx;
+            
+            if(x+1>=0&&x+1<this.width
+                &&this.collisionArray[x+1][y]==this.collisionArray[x][y]-1)
+                x++;
+            else if(x-1>=0&&x-1<this.width
+                &&this.collisionArray[x-1][y]==this.collisionArray[x][y]-1)
+                x--;
+            else if(y+1>=0&&y+1<this.height
+                &&this.collisionArray[x][y+1]==this.collisionArray[x][y]-1)
+                y++;
+            else if(y-1>=0&&y-1<this.height
+                &&this.collisionArray[x][y-1]==this.collisionArray[x][y]-1)
+                y--;
         }
+
+        console.log("PATH RESTORED")
 
         return result;
     }
