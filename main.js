@@ -33,6 +33,7 @@ function preload ()
     this.load.spritesheet('eye', 'Content/eye.png', {frameWidth: 6, frameHeight: 8});
     this.load.spritesheet('eye_selected', 'Content/eye_select.png', {frameWidth: 8, frameHeight: 10});
     this.load.spritesheet('explosion', 'Content/explosion.png', {frameWidth: 8, frameHeight: 8});
+    this.load.spritesheet('waterlines', 'Content/water_borders.png', {frameWidth: 8, frameHeight: 8});
 
     this.load.image('menu_overlay', 'Content/menu_overlay.png');
 }
@@ -42,6 +43,17 @@ var mainWorld;
 function create()
 {
     this.input.mouse.disableContextMenu();
+
+    for(let i=0; i<4; i++)
+        this.anims.create
+        (
+            {
+                key:'waterline'+i.toString(),
+                frames: this.anims.generateFrameNumbers('waterlines', {frames:[i]}),
+                frameRate: 8,
+                repeat:-1
+            }
+        );
 
     for(let i=0; i<10; i++)
         this.anims.create

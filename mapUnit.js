@@ -40,7 +40,7 @@ class MapUnit extends MapObject
     }
 
     #movingToPlace=false;
-    #movingAnimSpeed=5;
+    #movingAnimSpeed=7;
 
     #updateQueuedPlaces()
     {
@@ -143,7 +143,7 @@ class MapUnit extends MapObject
     walkTo(scene, world, x, y)
     {
         if(this.queuedPlaces.length>0)
-            return;
+            return false;
 
         let rs=world.findPath(this.mapX, this.mapY, x, y, this.speed);
 
@@ -159,5 +159,7 @@ class MapUnit extends MapObject
             this.mapX=x; this.mapY=y;
             this.#movingToPlace=true;
         }
+
+        return rs[0];
     }
 }

@@ -24,7 +24,7 @@ class World
         
         this.#fillArrays(scene);
         this.#generateTerrain(scene);
-        
+
         let neu=new EyeUnit(scene, ~~(this.width/2), 31, this.mapToScreen(~~(this.width/2), 31)[0], this.mapToScreen(31, 31)[1], this);
         this.existingUnits.push(neu);
         this.changeUnit(scene, ~~(this.width/2), 31, neu);
@@ -90,7 +90,20 @@ class World
                 Math.floor(this.width/2), this.height);
         }
 
-        this.#generateLake(scene, 5, 10, this.height-10, 1, 15);
+        this.#generateField(scene, this.width/2, this.height, 4);
+
+        startPointsNumber=randomInt(2, 6);
+
+        for(let i=0; i<startPointsNumber; i++)
+        {
+            let cy=randomInt(0, this.height-5);
+            this.#generateLake(scene, randomInt(0, this.width), cy, cy+randomInt(3, 10), 1, 15);
+        }
+
+        for(let i=0; i<this.width; i++)
+            for(let j=0; j<this.height; j++)
+                if(this.terrainArray[i][j] instanceof Water)
+                    this.terrainArray[i][j].addBorders(scene, this);
     }
 
     #generatePathway(scene, startX, startY, endX, endY)
@@ -123,6 +136,20 @@ class World
                 x+=xstep;
             }
             x-=xstep;
+        }
+    }
+
+    #generateField(scene, centerX, centerY, radius)
+    {
+        for(let i=centerX-radius; i<=centerX+radius; i++)
+        {
+            let hgh=Math.round(Math.abs(Math.sin(Math.acos((centerX-i+0.5)/radius))*radius));
+
+            for(let j=centerY-hgh; j<=centerY+hgh; j++)
+            {
+                let pr=this.mapToScreen(i, j);
+                this.#changeBlock(scene, i, j, new Ground(scene, i, j, pr[0], pr[1]));
+            }
         }
     }
 
@@ -324,8 +351,6 @@ class World
 
     #restorePath(startX, startY, endX, endY)
     {   
-        console.log("RESTORATION STARTED")
-        
         let result=[];
         let x=endX, y=endY;
 
@@ -346,8 +371,6 @@ class World
                 &&this.collisionArray[x][y-1]==this.collisionArray[x][y]-1)
                 y--;
         }
-
-        console.log("PATH RESTORED")
 
         return result;
     }
