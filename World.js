@@ -25,11 +25,6 @@ class World
         this.#fillArrays(scene);
         this.#generateTerrain(scene);
 
-        let neu=new EyeUnit(scene, ~~(this.width/2), 31, this.mapToScreen(~~(this.width/2), 31)[0], this.mapToScreen(31, 31)[1], this);
-        this.existingUnits.push(neu);
-        this.changeUnit(scene, ~~(this.width/2), 31, neu);
-        neu.activate(scene);
-
         this.#menuInit(scene);
 
         scene.input.on('pointerdown', this.#upclick(this), scene);
@@ -104,6 +99,25 @@ class World
             for(let j=0; j<this.height; j++)
                 if(this.terrainArray[i][j] instanceof Water)
                     this.terrainArray[i][j].addBorders(scene, this);
+        
+        this.#addCannon(scene);
+    }
+
+    #addCannon(scene)
+    {
+        let scr=this.mapToScreen(~~(this.width/2), this.height-1);
+        let neu=new Cannon(scene, ~~(this.width/2), this.height-1, scr[0], scr[1], this);
+        this.existingUnits.push(neu);
+        this.friendlyUnits.push(neu);
+
+        this.changeUnit(scene, neu.mapX, neu.mapY, neu);
+        this.changeUnit(scene, neu.mapX-1, neu.mapY, neu);
+        this.changeUnit(scene, neu.mapX+1, neu.mapY, neu);
+        this.changeUnit(scene, neu.mapX-1, neu.mapY-1, neu);
+        this.changeUnit(scene, neu.mapX, neu.mapY-1, neu);
+        this.changeUnit(scene, neu.mapX+1, neu.mapY-1, neu);
+        
+        neu.activate(scene);
     }
 
     #generatePathway(scene, startX, startY, endX, endY)
@@ -373,6 +387,11 @@ class World
         }
 
         return result;
+    }
+
+    inBounds(x, y)
+    {
+        return (x>=0&&y>=0&&x<this.width&&y<this.height);
     }
 }
 

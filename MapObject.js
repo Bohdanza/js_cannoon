@@ -49,7 +49,7 @@ class MapObject
     activate(scene)
     {
         this.mySprite=scene.add.sprite(this.screenX, this.screenY, this.mySpriteName);
-        this.mySprite.setDepth(this.mapY*2);
+        this.mySprite.setDepth(this.mapY*3);
         this.mySprite.displayOriginX=this.mySprite.width/2;
         this.mySprite.displayOriginY=this.mySprite.height;
         this.mySprite.play(this.mySpriteAnimName);

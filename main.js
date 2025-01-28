@@ -35,6 +35,9 @@ function preload ()
     this.load.spritesheet('explosion', 'Content/explosion.png', {frameWidth: 8, frameHeight: 8});
     this.load.spritesheet('waterlines', 'Content/water_borders.png', {frameWidth: 8, frameHeight: 8});
 
+    this.load.spritesheet('cannon', 'Content/cannon.png', {frameWidth: 22, frameHeight: 24});
+    this.load.spritesheet('cannon_selected', 'Content/cannon_select.png', {frameWidth: 24, frameHeight: 26});
+
     this.load.image('menu_overlay', 'Content/menu_overlay.png');
 }
 
@@ -110,10 +113,30 @@ function create()
     this.anims.create
     (
         {
+            key:'cannon_idle',
+            frames: this.anims.generateFrameNumbers('cannon', {frames:[0]}),
+            frameRate: 8,
+            repeat:-1
+        }
+    );
+    
+    this.anims.create
+    (
+        {
+            key:'cannon_selected_idle',
+            frames: this.anims.generateFrameNumbers('cannon_selected', {frames:[0]}),
+            frameRate: 8,
+            repeat:-1
+        }
+    );
+    
+    this.anims.create
+    (
+        {
             key:'explosion_anim',
             frames: this.anims.generateFrameNumbers('explosion', {frames:[0,1,2,3,4,5,6,7]}),
             frameRate: 8,
-            repeat:-1
+            repeat:0
         }
     );
 

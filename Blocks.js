@@ -34,7 +34,7 @@ class Water extends MapBlock
     #addBorder(scene, world, type)
     {
         let lstbrd=scene.add.sprite(this.screenX, this.screenY, "waterlines");
-        lstbrd.setDepth(this.mapY*2+1);
+        lstbrd.setDepth(this.mapY*3+1);
         lstbrd.displayOriginX=this.mySprite.width/2;
         lstbrd.displayOriginY=this.mySprite.height;
         lstbrd.play("waterline"+type.toString());
@@ -50,6 +50,6 @@ class Rock extends MapBlock
     {
         let animn = 'rock'+(~~(Math.random()*3.9999)).toString();
 
-        super(scene, animn, 'rock', mapX, mapY, screenX, screenY, true);
+        super(scene, animn, 'rock', mapX, mapY, screenX, screenY, false);
     }
 }
