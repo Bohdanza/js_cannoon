@@ -150,18 +150,23 @@ class MapUnit extends MapObject
 
         if(rs[0])
         {
-            this.queuedPlaces=rs[2];
-
-            for(let i=0; i<this.queuedPlaces.length; i++)
-                this.queuedPlaces[i]=world.mapToScreen(this.queuedPlaces[i][0], this.queuedPlaces[i][1]);
-
             this.actionPoints-=rs[1];
-            world.transferUnit(this.mapX, this.mapY, x, y);
-            this.mapX=x; this.mapY=y;
-            this.#movingToPlace=true;
+            this.transferTo(world, x, y, rs[2]);
         }
 
         return rs[0];
+    }
+
+    transferTo(world, x, y, pathArray)
+    {
+        this.queuedPlaces=pathArray;
+
+        for(let i=0; i<this.queuedPlaces.length; i++)
+            this.queuedPlaces[i]=world.mapToScreen(this.queuedPlaces[i][0], this.queuedPlaces[i][1]);
+        
+        world.transferUnit(this.mapX, this.mapY, x, y);
+        this.mapX=x; this.mapY=y;
+        this.#movingToPlace=true;
     }
 
     damageUnit(scene, world, power)

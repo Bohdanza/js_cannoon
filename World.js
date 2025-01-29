@@ -26,19 +26,21 @@ class World
 
         let scr=this.mapToScreen(~~(this.width/2), this.height-7);
         this.#createUnit(scene, new Magi(scene, ~~(this.width/2), this.height-7, scr[0], scr[1], this), false);
-        scr=this.mapToScreen(~~(this.width/2)-1, this.height-7);
-        this.#createUnit(scene, new Dino(scene, ~~(this.width/2)-1, this.height-7, scr[0], scr[1], this), false);
-        scr=this.mapToScreen(~~(this.width/2)-2, this.height-7);
-        this.#createUnit(scene, new Cauldron(scene, ~~(this.width/2)-2, this.height-7, scr[0], scr[1], this), false);
-        scr=this.mapToScreen(~~(this.width/2)+1, this.height-7);
-        this.#createUnit(scene, new Hound(scene, ~~(this.width/2)+1, this.height-7, scr[0], scr[1], this), false);
         
         scr=this.mapToScreen(~~(this.width/2), this.height-4);
         this.#createUnit(scene, new EyeUnit(scene, ~~(this.width/2), this.height-4, scr[0], scr[1], this), true);
 
-        this.enemyUnits[0].updateMovement(scene, this);
-
         this.#menuInit(scene);
+
+        scene.input.keyboard.on('keydown-W', 
+            function(world)
+            { 
+                return function(event)
+                {
+                    console.log("WPRESS");
+                    world.enemyUnits[0].updateMovement(this, world);
+                }; 
+            }(this), scene);
 
         scene.input.on('pointerdown', this.#upclick(this), scene);
     }
@@ -275,6 +277,9 @@ class World
 
     transferUnit(x1, y1, x2, y2)
     {
+        if(x1==x2&&y1==y2)
+            return;
+
         if(x1>=this.width || y1>=this.height || x1<0 ||y1<0||
             x2>=this.width || y2>=this.height || x2<0 ||y2<0)
             return;
@@ -341,6 +346,9 @@ class World
 
     findPath(startX, startY, endX, endY, maxPathLength)
     {
+        if(startX==endX&&startY==endY)
+            return [true, 0, [[startX, startY]]];
+
         if(this.collisionArray[endX][endY]==0||ManhattanDistance(startX, startY, endX, endY)>maxPathLength)
             return [false, 0, []];
 

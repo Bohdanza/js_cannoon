@@ -30,13 +30,48 @@ class EnemyUnit extends MapUnit
             let cpr=100;
 
             cpr+=world.friendlyUnits[i].mapY;
-            cpr-=ManhattanDistance(this.mapX, this.mapY, world.friendlyUnits[i].mapX, world.friendlyUnits[i].mapY)*2;
+            
+            let mhd=ManhattanDistance(this.mapX, this.mapY, world.friendlyUnits[i].mapX, world.friendlyUnits[i].mapY);
+            cpr-=mhd*mhd;
 
             priorities.push([cpr, world.friendlyUnits[i]]);
         }
 
-        priorities.sort(function(a, b){return a[0]-b[0];});
-   
+        priorities.sort(function(a, b){return b[0]-a[0];});
         console.log(priorities);
+   
+        for(let i=0; i<priorities.length; i++)
+        {
+            let wlk=this.#processWalking(scene, world, priorities[i][1]);
+
+            if(wlk[0])
+            {
+                let endCoord=Math.max(0, wlk[1].length-1-this.speed);
+                this.transferTo(world, wlk[1][endCoord][0], wlk[1][endCoord][1], 
+                    wlk[1].slice(endCoord, wlk[1].length));
+
+                return;
+            }
+        }
+
+        return;
+    }
+
+    #processWalking(scene, world, targetUnit)
+    {
+        let ltr=targetUnit.adjacentCoords();
+
+        for(let i=0; i<ltr.length; i++)
+        {
+            if(world.inBounds(ltr[i][0], ltr[i][1]))
+            {
+                let pspt=world.findPath(this.mapX, this.mapY, ltr[i][0], ltr[i][1], 10000);
+                
+                if(pspt[0])
+                    return [true, pspt[2]];
+            }
+        }
+
+        return [false, []];
     }
 }
