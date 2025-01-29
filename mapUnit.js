@@ -174,4 +174,9 @@ class MapUnit extends MapObject
             world.deleteUnit(scene, this.mapX, this.mapY);
         }
     }
+
+    adjacentCoords()
+    {
+        return [[this.mapX-1, this.mapY], [this.mapX+1, this.mapY], [this.mapX, this.mapY-1], [this.mapX, this.mapY+1]];
+    }
 }

@@ -24,4 +24,11 @@ class Cannon extends FriendlyUnit
             (new Explosion(scene, rc[0], rc[1], mc[0], mc[1])).activate(scene);
         }
     }
+    
+    adjacentCoords()
+    {
+        return [[this.mapX-2, this.mapY], [this.mapX-2, this.mapY-1], [this.mapX-2, this.mapY-2],
+         [this.mapX-1, this.mapY-2], [this.mapX, this.mapY-2], [this.mapX+1, this.mapY-2], [this.mapX+2, this.mapY-2],
+         [this.mapX+2, this.mapY], [this.mapX+2, this.mapY-1], [this.mapX+2, this.mapY-2]];
+    }
 }

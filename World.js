@@ -36,6 +36,8 @@ class World
         scr=this.mapToScreen(~~(this.width/2), this.height-4);
         this.#createUnit(scene, new EyeUnit(scene, ~~(this.width/2), this.height-4, scr[0], scr[1], this), true);
 
+        this.enemyUnits[0].updateMovement(scene, this);
+
         this.#menuInit(scene);
 
         scene.input.on('pointerdown', this.#upclick(this), scene);

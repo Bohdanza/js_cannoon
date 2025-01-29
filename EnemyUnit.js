@@ -20,4 +20,23 @@ class EnemyUnit extends MapUnit
             world.changeUnit(scene, this.mapX, this.mapY, crp);
         }
     }
+
+    updateMovement(scene, world)
+    {
+        let priorities=[];
+
+        for(let i=0; i<world.friendlyUnits.length; i++)
+        {
+            let cpr=100;
+
+            cpr+=world.friendlyUnits[i].mapY;
+            cpr-=ManhattanDistance(this.mapX, this.mapY, world.friendlyUnits[i].mapX, world.friendlyUnits[i].mapY)*2;
+
+            priorities.push([cpr, world.friendlyUnits[i]]);
+        }
+
+        priorities.sort(function(a, b){return a[0]-b[0];});
+   
+        console.log(priorities);
+    }
 }
