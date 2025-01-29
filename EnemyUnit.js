@@ -29,7 +29,7 @@ class EnemyUnit extends MapUnit
     {
         let currentTarget=null;
 
-        if(ManhattanDistance(this.mapX, this.mapY, this.#unitToTarget.mapX, this.#unitToTarget.mapY)==1)
+        if(this.#unitToTarget.alive&&ManhattanDistance(this.mapX, this.mapY, this.#unitToTarget.mapX, this.#unitToTarget.mapY)==1)
         {
             currentTarget=this.#unitToTarget;
         }
@@ -46,7 +46,10 @@ class EnemyUnit extends MapUnit
         }
 
         if(currentTarget==null)
+        {
+            world.stopAgression();
             return;
+        }
 
         currentTarget.damageUnit(scene, world, this.power);
 
@@ -66,6 +69,9 @@ class EnemyUnit extends MapUnit
 
         let neu = new HitVisual(scene, this.mapX, this.mapY, this.screenX, this.screenY, rot*Math.PI/2);
         neu.activate(scene);
+        world.stopAgression();
+
+        return;
     }
 
     updateMovement(scene, world)

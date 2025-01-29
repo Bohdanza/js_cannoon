@@ -15,6 +15,9 @@ class World
     enemyUnits=[];
     existingUnits=[];
 
+    agressivePhase=false;
+    stopCalls=0;
+
     //scene is essentially used to add new gameobjects to it.
     //May be implemented by world extending a scene, but that's not a big difference
     constructor(width, height, scene)
@@ -27,23 +30,47 @@ class World
 
         let scr=this.mapToScreen(~~(this.width/2), this.height-7);
         this.#createUnit(scene, new Magi(scene, ~~(this.width/2), this.height-7, scr[0], scr[1], this), false);
+        scr=this.mapToScreen(~~(this.width/2), this.height-6);
+        this.#createUnit(scene, new Dino(scene, ~~(this.width/2), this.height-6, scr[0], scr[1], this), false);
         
         scr=this.mapToScreen(~~(this.width/2), this.height-4);
         this.#createUnit(scene, new EyeUnit(scene, ~~(this.width/2), this.height-4, scr[0], scr[1], this), true);
 
         this.#menuInit(scene);
 
-        scene.input.keyboard.on('keydown-W', 
+        scene.input.keyboard.on('keydown-ENTER', 
             function(world)
             { 
                 return function(event)
                 {
-                    console.log("WPRESS");
-                    world.processEnemies(this, world);
+                    world.startAgression(this, world);
                 }; 
             }(this), scene);
 
         scene.input.on('pointerdown', this.#upclick(this), scene);
+    }
+
+    startAgression(scene, world)
+    {
+        world.stopCalls=0;
+        world.activePhase=true;
+
+        for(let i=0; i<world.friendlyUnits.length; i++)
+            world.friendlyUnits[i].actionPoints=0;
+        
+        world.processEnemies(scene, world);
+    }
+
+    stopAgression()
+    {
+        this.stopCalls++;
+
+        if(this.stopCalls==this.enemyUnits.length)
+        {
+            this.activePhase=false;
+            for(let i=0; i<this.friendlyUnits.length; i++)
+                this.friendlyUnits[i].actionPoints=this.friendlyUnits[i].speed;
+        }
     }
 
     update()
@@ -113,7 +140,7 @@ class World
                 Math.floor(this.width/2), this.height);
         }
 
-        this.#generateField(scene, this.width/2, this.height, 4);
+        this.#generateField(scene, ~~(this.width/2)-1, this.height, 4);
 
         startPointsNumber=randomInt(2, 6);
 
@@ -280,14 +307,19 @@ class World
 
         if(this.unitArray[x][y]!=null)
         {
-            this.existingUnits.splice(this.existingUnits.indexOf(this.unitArray[x][y]), 1);
-            
-            if(this.unitArray[x][y] instanceof FriendlyUnit)
-                this.friendlyUnits.splice(this.friendlyUnits.indexOf(this.unitArray[x][y]), 1);
+            let ind=this.existingUnits.indexOf(this.unitArray[x][y]);
 
-            if(this.unitArray[x][y] instanceof EnemyUnit)
-                this.enemyUnits.splice(this.enemyUnits.indexOf(this.unitArray[x][y]), 1);
-         
+            if(ind!=-1)
+            {
+                this.existingUnits.splice(ind, 1);
+            
+                if(this.unitArray[x][y] instanceof FriendlyUnit)
+                    this.friendlyUnits.splice(this.friendlyUnits.indexOf(this.unitArray[x][y]), 1);
+
+                if(this.unitArray[x][y] instanceof EnemyUnit)
+                    this.enemyUnits.splice(this.enemyUnits.indexOf(this.unitArray[x][y]), 1);
+            }
+            
             this.unitArray[x][y].delete();
             this.unitArray[x][y]=null;
         }
@@ -333,7 +365,7 @@ class World
                     pointer.y<=GLOBALSPRITESCALE+world.height*8*GLOBALSPRITESCALE)
                 {
                     let mpcr=world.screenToMap(pointer.x, pointer.y);
-                    
+
                     world.useOnMapUnit(world.selectedUnit, 
                         function(requiredScene)
                         { 
