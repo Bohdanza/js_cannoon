@@ -64,7 +64,7 @@ class World
             {
                 world.turnsSinceWave=0;
                 
-                if(this.enemyUnits.length<this.currentWaveStrength*3)
+                if(this.enemyUnits.length<=this.currentWaveStrength*3)
                     world.spawnWave(scene, world.currentWaveStrength);
                 
                 world.currentWaveStrength++;
@@ -73,7 +73,15 @@ class World
             world.processEnemies(scene, world);
 
             world.stopAgression();
+            this.increaseResource(1);
         }
+    }
+
+    increaseResource(amount)
+    {
+        this.resource+=amount;
+
+        this.#resourceTextField.setText(this.resource.toString());
     }
 
     stopAgression()
@@ -84,7 +92,7 @@ class World
         {
             this.activePhase=false;
             for(let i=0; i<this.friendlyUnits.length; i++)
-                this.friendlyUnits[i].actionPoints=this.friendlyUnits[i].speed;
+                this.friendlyUnits[i].changeActionPoints(this.friendlyUnits[i].speed);
         }
     }
 
@@ -114,7 +122,7 @@ class World
         this.#overlayImage.setScale(GLOBALSPRITESCALE);
         this.#overlayImage.setDepth(250);
         
-        this.#resourceTextField=scene.add.text(1670, 1036, this.resource.toString(), {fontFamily: "mainFont", fontSize: "48px"});
+        this.#resourceTextField=scene.add.text(1680, 1036, this.resource.toString(), {fontFamily: "mainFont", fontSize: "48px"});
         this.#resourceTextField.displayOriginY=this.#resourceTextField.height/2;
         this.#resourceTextField.setDepth(251);
     }

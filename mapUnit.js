@@ -14,9 +14,11 @@ class MapUnit extends MapObject
     myWorld;
     actionPoints;
     queuedPlaces=[];
+    #personalName;
+    textField;
 
-    constructor(scene, spriteName, mapX, mapY, screenX, screenY, passable, selectionFrameName, maxHP, currentHP, speed, power, sight,
-        friendly, world)
+    constructor(scene, spriteName, mapX, mapY, screenX, screenY, passable, selectionFrameName, maxHP, currentHP,
+        speed, power, sight, friendly, world, personalName)
     {
         super(scene, spriteName+"_idle", spriteName, mapX, mapY, screenX, screenY, passable);
 
@@ -32,6 +34,7 @@ class MapUnit extends MapObject
         this.friendly=friendly;
         this.myWorld=world;
         this.actionPoints=speed;
+        this.#personalName=personalName;
     }
 
     update(world)
@@ -99,10 +102,36 @@ class MapUnit extends MapObject
         this.selectionFrame.setDepth(200);
         this.selectionFrame.displayOriginX=this.selectionFrame.width/2;
         this.selectionFrame.displayOriginY=this.selectionFrame.height-1;
-        this.selectionFrame.setScale(GLOBALSPRITESCALE);   
+        this.selectionFrame.setScale(GLOBALSPRITESCALE);
 
         this.selectionFrame.play(this.selectionFrameName+"_idle");
         this.selectionFrame.visible=false;
+
+        this.textField=scene.add.text(1625, 20, this.generateDescription(),
+        {fontFamily: "mainFont", fontSize: "36px"});
+        this.textField.displayOriginY=0;
+        this.textField.displayOriginX=0;
+        this.textField.setDepth(251);
+        this.textField.visible=false;
+    }
+
+    updateDescription()
+    {
+        let st=this.generateDescription();
+        this.textField.setText(st);
+    }
+
+    generateDescription()
+    {
+        let st=this.#personalName+
+        `\n\nHP: ${this.currentHP}/${this.maxHP}\nAP: ${this.actionPoints}/${this.speed}\nATK: ${this.power}`;
+        return st;
+    }
+
+    changeActionPoints(newPoints)
+    {
+        this.actionPoints=newPoints;
+        this.updateDescription();
     }
 
     changeAction(action)
@@ -114,11 +143,13 @@ class MapUnit extends MapObject
     show()
     {
         this.mySprite.visible=true;
+        this.textField.visible=true;
     }
 
     hide()
     {
         this.mySprite.visible=false;
+        this.textField.visible=false;
         this.deselect();
     }
 
@@ -126,12 +157,14 @@ class MapUnit extends MapObject
     {
         this.selected=true;
         this.selectionFrame.visible=true;
+        this.textField.visible=true;
     }
 
     deselectUnit(scene)
     {
         this.selected=false;
         this.selectionFrame.visible=false;
+        this.textField.visible=false;
     }
 
     #drawMenu(scene)
@@ -141,6 +174,7 @@ class MapUnit extends MapObject
     {
         super.delete();
         this.selectionFrame.destroy(true);
+        this.textField.destroy(true);
         this.selected=false;
     }
 

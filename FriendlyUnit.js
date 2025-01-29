@@ -3,10 +3,10 @@ class FriendlyUnit extends MapUnit
     selectedAction;
 
     constructor(scene, spriteName, mapX, mapY, screenX, screenY, passable, selectionFrameName,
-        maxHP, currentHP, speed, power, sight, world)
+        maxHP, currentHP, speed, power, sight, world, personalName)
     {
         super(scene, spriteName, mapX, mapY, screenX, screenY, passable, selectionFrameName,
-            maxHP, currentHP, speed, power, sight, true, world);
+            maxHP, currentHP, speed, power, sight, true, world, personalName);
         
         this.selectedAction=this.#walkAction;
 

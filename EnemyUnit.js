@@ -5,10 +5,10 @@ class EnemyUnit extends MapUnit
     #attackUpdate=false;
 
     constructor(scene, spriteName, mapX, mapY, screenX, screenY, passable, selectionFrameName,
-        maxHP, currentHP, speed, power, sight, world)
+        maxHP, currentHP, speed, power, sight, world, personalName)
     {   
         super(scene, spriteName, mapX, mapY, screenX, screenY, passable, selectionFrameName,
-            maxHP, currentHP, speed, power, sight, true, world);
+            maxHP, currentHP, speed, power, sight, true, world, personalName);
     }
 
     damageUnit(scene, world, power)
@@ -90,7 +90,6 @@ class EnemyUnit extends MapUnit
         }
 
         priorities.sort(function(a, b){return b[0]-a[0];});
-        console.log(priorities);
 
         this.#unitToTarget=null;
 

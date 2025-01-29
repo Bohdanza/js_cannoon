@@ -44,11 +44,11 @@ class Corpse extends MapUnit
             tmpname="bio_";
 
         super(scene, tmpname+"corpse", mapX, mapY, screenX, screenY, true, tmpname+'corpse_selection',
-            1, 1, 0, 0, 0, true, world);
-            
+            1, 1, 0, 0, 0, true, world, "Corpse");
+        
         this.#corpseType=corpseType;
     }
-    
+
     activate(scene)
     {
         this.mySprite=scene.add.sprite(this.screenX, this.screenY, this.mySpriteName);
@@ -68,5 +68,12 @@ class Corpse extends MapUnit
 
         this.selectionFrame.play(this.selectionFrameName);
         this.selectionFrame.visible=false;
+        
+        this.textField=scene.add.text(1625, 20, this.generateDescription(),
+        {fontFamily: "mainFont", fontSize: "36px"});
+        this.textField.displayOriginY=0;
+        this.textField.displayOriginX=0;
+        this.textField.setDepth(251);
+        this.textField.visible=false;
     }
 }

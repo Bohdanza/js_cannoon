@@ -2,7 +2,8 @@ class Cannon extends FriendlyUnit
 {
     constructor(scene, mapX, mapY, screenX, screenY, world)
     {
-        super(scene, "cannon", mapX, mapY, screenX, screenY, false, "cannon_selected", 50000, 50000, 1, 5, 7, world);
+        super(scene, "cannon", mapX, mapY, screenX, screenY, false, "cannon_selected", 50000, 50000, 1, 5, 7, world,
+            "Cannon");
         this.selectedAction=this.#shootAction;
         this.actionPoints=1;
     }
@@ -34,7 +35,7 @@ class Cannon extends FriendlyUnit
 
         if(this.actionPoints>0&&world.inBounds(rc[0], rc[1])&&world.terrainArray[rc[0]][rc[1]].passable)
         {
-            this.actionPoints--;
+            this.changeActionPoints(this.actionPoints-1);
             world.useOnMapUnit(world.unitArray[rc[0]][rc[1]],
                 function(parent){ return function(unit){unit.damageUnit(scene, world, parent.power)}}(this));
             
