@@ -18,23 +18,21 @@ class World
     agressivePhase=false;
     stopCalls=0;
 
+    turnsSinceWave=100;
+    currentWaveStrength=0;
+
     //scene is essentially used to add new gameobjects to it.
     //May be implemented by world extending a scene, but that's not a big difference
     constructor(width, height, scene)
     {
         this.width=width;
-        this.height=height;
+        this.height=height+3;
         
         this.#fillArrays(scene);
         this.#generateTerrain(scene);
 
-        let scr=this.mapToScreen(~~(this.width/2), this.height-7);
-        this.#createUnit(scene, new Magi(scene, ~~(this.width/2), this.height-7, scr[0], scr[1], this), false);
-        scr=this.mapToScreen(~~(this.width/2), this.height-6);
-        this.#createUnit(scene, new Dino(scene, ~~(this.width/2), this.height-6, scr[0], scr[1], this), false);
-        
-        scr=this.mapToScreen(~~(this.width/2), this.height-4);
-        this.#createUnit(scene, new EyeUnit(scene, ~~(this.width/2), this.height-4, scr[0], scr[1], this), true);
+      //  scr=this.mapToScreen(~~(this.width/2), this.height-4);
+      //  this.#createUnit(scene, new EyeUnit(scene, ~~(this.width/2), this.height-4, scr[0], scr[1], this), true);
 
         this.#menuInit(scene);
 
@@ -52,20 +50,33 @@ class World
 
     startAgression(scene, world)
     {
-        world.stopCalls=0;
-        world.activePhase=true;
+        if(!world.activePhase)
+        {
+            world.stopCalls=0;
+            world.activePhase=true;
 
-        for(let i=0; i<world.friendlyUnits.length; i++)
-            world.friendlyUnits[i].actionPoints=0;
-        
-        world.processEnemies(scene, world);
+            for(let i=0; i<world.friendlyUnits.length; i++)
+                world.friendlyUnits[i].actionPoints=0;
+            
+            world.turnsSinceWave++;
+
+            if(world.turnsSinceWave>10)
+            {
+                world.turnsSinceWave=0
+                world.spawnWave(scene, world.currentWaveStrength);
+            }
+
+            world.processEnemies(scene, world);
+
+            world.stopAgression();
+        }
     }
 
     stopAgression()
     {
         this.stopCalls++;
 
-        if(this.stopCalls==this.enemyUnits.length)
+        if(this.stopCalls>=this.enemyUnits.length+1)
         {
             this.activePhase=false;
             for(let i=0; i<this.friendlyUnits.length; i++)
@@ -118,9 +129,14 @@ class World
                 let rc=new Rock(scene, i, j, rcc[0], rcc[1]);
                 rc.activate(scene);
 
+                if(j<3)
+                {
+                    rc=new Ground(scene, i, j, rcc[0], rcc[1]);
+                }
+
                 arr1.push(rc);
-                arr2.push(null)
-                arr3.push(0);
+                arr2.push(null);
+                arr3.push(rc.passable);
             }
 
             this.terrainArray.push(arr1);
@@ -136,7 +152,7 @@ class World
         for(let i=0; i<startPointsNumber; i++)
         {
             this.#generatePathway(scene, 
-                Math.floor(i*this.width/startPointsNumber+Math.random()*(this.width/startPointsNumber)), 0, 
+                Math.floor(i*this.width/startPointsNumber+Math.random()*(this.width/startPointsNumber)), 3, 
                 Math.floor(this.width/2), this.height);
         }
 
@@ -146,12 +162,12 @@ class World
 
         for(let i=0; i<startPointsNumber; i++)
         {
-            let cy=randomInt(0, this.height-5);
+            let cy=randomInt(3, this.height-5);
             this.#generateLake(scene, randomInt(0, this.width), cy, cy+randomInt(3, 10), 1, 15);
         }
 
         for(let i=0; i<this.width; i++)
-            for(let j=0; j<this.height; j++)
+            for(let j=3; j<this.height; j++)
                 if(this.terrainArray[i][j] instanceof Water)
                     this.terrainArray[i][j].addBorders(scene, this);
         
@@ -169,7 +185,7 @@ class World
 
         this.changeUnit(scene, unit.mapX, unit.mapY, unit);
         unit.activate(scene);
-    }
+    } 
 
     #addCannon(scene)
     {
@@ -267,12 +283,12 @@ class World
 
     mapToScreen(x, y)
     {
-        return [x*32+16+GLOBALSPRITESCALE, y*32+32+GLOBALSPRITESCALE];
+        return [x*32+16+GLOBALSPRITESCALE, y*32-64+GLOBALSPRITESCALE];
     }
     
     screenToMap(x, y)
     {
-        return [~~((x-GLOBALSPRITESCALE)/32), ~~((y-GLOBALSPRITESCALE)/32)];
+        return [~~((x-GLOBALSPRITESCALE)/32), ~~((y+96-GLOBALSPRITESCALE)/32)];
     }
 
     #changeBlock(scene, x, y, newBlock, array)
@@ -483,10 +499,82 @@ class World
         return (x>=0&&y>=0&&x<this.width&&y<this.height);
     }
 
-    spawnWave(strength)
+    spawnWave(scene, strength)
     {
         let wavePoints=strength*strength+3;
+        let strongNumber=~~(wavePoints/6);
+        let weakNumber=strongNumber*2+wavePoints-(strongNumber*6);
 
+        for(let i=0; i<strongNumber; i++)
+        {
+            let xc=randomInt(0, this.width);
+            let yc=randomInt(0, 3);
+
+            let xcb=xc;
+            let ycb=yc;
+
+            while(!this.collisionArray[xc][yc]&&(yc+1)%3!=ycb)
+            {
+                yc++;
+                yc%=3;
+
+                while(!this.collisionArray[xc][yc]&&(xc+1)%this.width!=xcb)
+                {
+                    xc++;
+                    xc%=this.width;
+                }
+            }
+
+            if(this.collisionArray[xc][yc])
+            {
+                let tc=randomInt(0, 3);
+                let mc=null;
+                let rsc=this.mapToScreen(xc, yc);
+
+                if(tc==0)
+                    mc=new Magi(scene, xc, yc, rsc[0], rsc[1], this);
+                else if(tc==1)
+                    mc=new Cauldron(scene, xc, yc, rsc[0], rsc[1], this);
+                else
+                    mc=new Dino(scene, xc, yc, rsc[0], rsc[1], this);
+
+                this.#createUnit(scene, mc, false);
+                mc.activate(scene);
+            }
+        }
+
+        //CODE COPYING, but YOU DON'T UNDERSTAND how LittlE I care at this point
+        for(let i=0; i<weakNumber; i++)
+        {
+            let xc=randomInt(0, this.width);
+            let yc=randomInt(0, 3);
+    
+            let xcb=xc;
+            let ycb=yc;
+    
+            while(!this.collisionArray[xc][yc]&&(yc+1)%3!=ycb)
+            {
+                yc++;
+                yc%=3;
+
+                while(!this.collisionArray[xc][yc]&&(xc+1)%this.width!=xcb)
+                {
+                    xc++;
+                    xc%=this.width;
+                }
+            }
+    
+            if(this.collisionArray[xc][yc])
+            {
+                let tc=randomInt(0, 3);
+                let mc=null;
+                let rsc=this.mapToScreen(xc, yc);
+                mc=new Hound(scene, xc, yc, rsc[0], rsc[1], this);
+    
+                this.#createUnit(scene, mc, false);
+                mc.activate(scene);
+            }
+        }
     }
 }
 

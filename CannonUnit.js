@@ -44,8 +44,7 @@ class Cannon extends FriendlyUnit
     
     adjacentCoords()
     {
-        return [[this.mapX-2, this.mapY], [this.mapX-2, this.mapY-1], [this.mapX-2, this.mapY-2],
-         [this.mapX-1, this.mapY-2], [this.mapX, this.mapY-2], [this.mapX+1, this.mapY-2], [this.mapX+2, this.mapY-2],
-         [this.mapX+2, this.mapY], [this.mapX+2, this.mapY-1], [this.mapX+2, this.mapY-2]];
+        return [[this.mapX-1, this.mapY-2], [this.mapX, this.mapY-2], [this.mapX+1, this.mapY-2], 
+        [this.mapX-2, this.mapY], [this.mapX+2, this.mapY], [this.mapX-2, this.mapY-1], [this.mapX+2, this.mapY-1]];
     }
 }
