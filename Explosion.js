@@ -12,3 +12,42 @@ class Explosion extends MapBlock
         this.mySprite.on('animationcomplete', function(unit){return function() {unit.delete();};}(this));
     }
 }
+
+class Corpse extends MapUnit
+{
+    #corpseType;
+
+    constructor(scene, mapX, mapY, screenX, screenY, world, corpseType)
+    {
+        let tmpname='mech_';
+
+        if(corpseType==1)
+            tmpname="bio_";
+
+        super(scene, tmpname+"corpse", mapX, mapY, screenX, screenY, true, tmpname+'corpse_selection',
+            1, 1, 0, 0, 0, true, world);
+            
+        this.#corpseType=corpseType;
+    }
+    
+    activate(scene)
+    {
+        this.mySprite=scene.add.sprite(this.screenX, this.screenY, this.mySpriteName);
+        this.mySprite.setDepth(this.mapY*3);
+        this.mySprite.displayOriginX=this.mySprite.width/2;
+        this.mySprite.displayOriginY=this.mySprite.height;
+        this.mySprite.play(this.mySpriteAnimName);
+
+        this.mySprite.setScale(GLOBALSPRITESCALE);
+
+        this.selectionFrame=scene.add.sprite(this.screenX, this.screenY, 'corpse_selected');
+
+        this.selectionFrame.setDepth(99);
+        this.selectionFrame.displayOriginX=this.selectionFrame.width/2;
+        this.selectionFrame.displayOriginY=this.selectionFrame.height-1;
+        this.selectionFrame.setScale(GLOBALSPRITESCALE);   
+
+        this.selectionFrame.play(this.selectionFrameName);
+        this.selectionFrame.visible=false;
+    }
+}

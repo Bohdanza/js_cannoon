@@ -38,6 +38,18 @@ function preload ()
     this.load.spritesheet('cannon', 'Content/cannon.png', {frameWidth: 22, frameHeight: 24});
     this.load.spritesheet('cannon_selected', 'Content/cannon_select.png', {frameWidth: 24, frameHeight: 26});
 
+    this.load.spritesheet('magi', 'Content/magi.png', {frameWidth: 8, frameHeight: 8});
+    this.load.spritesheet('magi_selected', 'Content/magi_select.png', {frameWidth: 10, frameHeight: 10});
+    this.load.spritesheet('hound', 'Content/hound.png', {frameWidth: 8, frameHeight: 7});
+    this.load.spritesheet('hound_selected', 'Content/hound_select.png', {frameWidth: 10, frameHeight: 9});
+    this.load.spritesheet('dino', 'Content/dino.png', {frameWidth: 8, frameHeight: 8});
+    this.load.spritesheet('dino_selected', 'Content/dino_select.png', {frameWidth: 10, frameHeight: 10});
+    this.load.spritesheet('cauldron', 'Content/cauldron.png', {frameWidth: 8, frameHeight: 8});
+    this.load.spritesheet('cauldron_selected', 'Content/cauldron_select.png', {frameWidth: 10, frameHeight: 10});
+
+    this.load.spritesheet('corpse', 'Content/corpse.png', {frameWidth: 8, frameHeight: 8});
+    this.load.spritesheet('corpse_selected', 'Content/corpse_select.png', {frameWidth: 10, frameHeight: 10});
+
     this.load.image('menu_overlay', 'Content/menu_overlay.png');
 }
 
@@ -137,6 +149,70 @@ function create()
             frames: this.anims.generateFrameNumbers('explosion', {frames:[0,1,2,3,4,5,6,7]}),
             frameRate: 8,
             repeat:0
+        }
+    );
+
+    let unitNames=['magi', 'dino', 'cauldron', 'hound'];
+
+    for(let i=0; i<unitNames.length; i++)
+    {
+        this.anims.create
+        (
+            {
+                key:unitNames[i]+'_idle',
+                frames: unitNames[i],
+                frameRate: 8,
+                repeat:-1
+            }
+        );
+        this.anims.create
+        (
+            {
+                key:unitNames[i]+'_selected_idle',
+                frames: unitNames[i]+'_selected',
+                frameRate: 8,
+                repeat:-1
+            }
+        );
+    }
+
+    this.anims.create
+    (
+        {
+            key:'mech_corpse_idle',
+            frames: this.anims.generateFrameNumbers('corpse', {frames:[0]}),
+            frameRate: 8,
+            repeat:-1
+        }
+    );
+    
+    this.anims.create
+    (
+        {
+            key:'bio_corpse_idle',
+            frames: this.anims.generateFrameNumbers('corpse', {frames:[1]}),
+            frameRate: 8,
+            repeat:-1
+        }
+    );
+
+    this.anims.create
+    (
+        {
+            key:'mech_corpse_selection',
+            frames: this.anims.generateFrameNumbers('corpse_selected', {frames:[0]}),
+            frameRate: 8,
+            repeat:-1
+        }
+    );
+    
+    this.anims.create
+    (
+        {
+            key:'bio_corpse_selection',
+            frames: this.anims.generateFrameNumbers('corpse_selected', {frames:[1]}),
+            frameRate: 8,
+            repeat:-1
         }
     );
 

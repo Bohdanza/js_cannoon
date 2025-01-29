@@ -9,7 +9,7 @@ class FriendlyUnit extends MapUnit
             maxHP, currentHP, speed, power, sight, true, world);
         
         this.selectedAction=this.#walkAction;
-            
+
         scene.input.on('pointerdown', 
             function(scene) 
             { 

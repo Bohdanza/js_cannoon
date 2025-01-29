@@ -25,6 +25,15 @@ class World
         this.#fillArrays(scene);
         this.#generateTerrain(scene);
 
+        let scr=this.mapToScreen(~~(this.width/2), this.height-7);
+        this.#createUnit(scene, new Magi(scene, ~~(this.width/2), this.height-7, scr[0], scr[1], this), false);
+        scr=this.mapToScreen(~~(this.width/2)-1, this.height-7);
+        this.#createUnit(scene, new Dino(scene, ~~(this.width/2)-1, this.height-7, scr[0], scr[1], this), false);
+        scr=this.mapToScreen(~~(this.width/2)-2, this.height-7);
+        this.#createUnit(scene, new Cauldron(scene, ~~(this.width/2)-2, this.height-7, scr[0], scr[1], this), false);
+        scr=this.mapToScreen(~~(this.width/2)+1, this.height-7);
+        this.#createUnit(scene, new Hound(scene, ~~(this.width/2)+1, this.height-7, scr[0], scr[1], this), false);
+
         this.#menuInit(scene);
 
         scene.input.on('pointerdown', this.#upclick(this), scene);
@@ -101,6 +110,19 @@ class World
                     this.terrainArray[i][j].addBorders(scene, this);
         
         this.#addCannon(scene);
+    }
+
+    #createUnit(scene, unit, friend)
+    {
+        this.existingUnits.push(unit);
+
+        if(friend)
+            this.friendlyUnits.push(unit);
+        else
+            this.enemyUnits.push(unit);
+
+        this.changeUnit(scene, unit.mapX, unit.mapY, unit);
+        unit.activate(scene);
     }
 
     #addCannon(scene)
