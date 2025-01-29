@@ -29,7 +29,8 @@ class EnemyUnit extends MapUnit
     {
         let currentTarget=null;
 
-        if(this.#unitToTarget.alive&&ManhattanDistance(this.mapX, this.mapY, this.#unitToTarget.mapX, this.#unitToTarget.mapY)==1)
+        if(this.#unitToTarget!=null&&this.#unitToTarget.alive&&
+            ManhattanDistance(this.mapX, this.mapY, this.#unitToTarget.mapX, this.#unitToTarget.mapY)==1)
         {
             currentTarget=this.#unitToTarget;
         }
@@ -47,7 +48,6 @@ class EnemyUnit extends MapUnit
 
         if(currentTarget==null)
         {
-            world.stopAgression();
             return;
         }
 
@@ -69,7 +69,6 @@ class EnemyUnit extends MapUnit
 
         let neu = new HitVisual(scene, this.mapX, this.mapY, this.screenX, this.screenY, rot*Math.PI/2);
         neu.activate(scene);
-        world.stopAgression();
 
         return;
     }
@@ -93,6 +92,8 @@ class EnemyUnit extends MapUnit
         priorities.sort(function(a, b){return b[0]-a[0];});
         console.log(priorities);
 
+        this.#unitToTarget=null;
+
         for(let i=0; i<priorities.length; i++)
         {
             let wlk=this.#processWalking(scene, world, priorities[i][1]);
@@ -107,6 +108,7 @@ class EnemyUnit extends MapUnit
             }
         }
 
+        this.#attackUpdate=true;
         return;
     }
 
@@ -118,6 +120,7 @@ class EnemyUnit extends MapUnit
         {
             this.#attackUpdate=false;
             this.updateAttack(this.#attackScene, world);
+            world.stopAgression();
         }
     }
 

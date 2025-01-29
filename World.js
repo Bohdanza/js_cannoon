@@ -60,10 +60,14 @@ class World
             
             world.turnsSinceWave++;
 
-            if(world.turnsSinceWave>10)
+            if(world.turnsSinceWave>20)
             {
-                world.turnsSinceWave=0
-                world.spawnWave(scene, world.currentWaveStrength);
+                world.turnsSinceWave=0;
+                
+                if(this.enemyUnits.length<this.currentWaveStrength*3)
+                    world.spawnWave(scene, world.currentWaveStrength);
+                
+                world.currentWaveStrength++;
             }
 
             world.processEnemies(scene, world);
@@ -563,7 +567,7 @@ class World
                     xc%=this.width;
                 }
             }
-    
+
             if(this.collisionArray[xc][yc])
             {
                 let tc=randomInt(0, 3);
