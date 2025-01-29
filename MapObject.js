@@ -1,3 +1,5 @@
+const GLOBALSPRITESCALE = 4;
+
 class MapObject
 {
     mapX; mapY;

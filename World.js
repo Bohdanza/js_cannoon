@@ -1,4 +1,3 @@
-const GLOBALSPRITESCALE = 4;
 
 /**Esentially the main class for gameplay purposes. Does all the heavy lifting, should be updated  */
 class World
@@ -33,6 +32,9 @@ class World
         this.#createUnit(scene, new Cauldron(scene, ~~(this.width/2)-2, this.height-7, scr[0], scr[1], this), false);
         scr=this.mapToScreen(~~(this.width/2)+1, this.height-7);
         this.#createUnit(scene, new Hound(scene, ~~(this.width/2)+1, this.height-7, scr[0], scr[1], this), false);
+        
+        scr=this.mapToScreen(~~(this.width/2), this.height-4);
+        this.#createUnit(scene, new EyeUnit(scene, ~~(this.width/2), this.height-4, scr[0], scr[1], this), true);
 
         this.#menuInit(scene);
 
