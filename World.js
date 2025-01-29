@@ -7,7 +7,8 @@ class World
     terrainArray=[];
     unitArray=[];
     collisionArray=[];
-    resource=156;
+    currentWave=0;
+    resource=0;
     #resourceTextField;
     selectedUnit=null;
     friendlyUnits=[];
@@ -38,7 +39,7 @@ class World
                 return function(event)
                 {
                     console.log("WPRESS");
-                    world.enemyUnits[0].updateMovement(this, world);
+                    world.processEnemies(this, world);
                 }; 
             }(this), scene);
 
@@ -48,7 +49,19 @@ class World
     update()
     {
         for(let i=0; i<this.existingUnits.length; i++)
-            this.existingUnits[i].update();
+            this.existingUnits[i].update(this);
+    }
+
+    processEnemies(scene, world)
+    {
+        for(let i=0; i<world.enemyUnits.length; i++)
+            if(this.enemyUnits[i].alive)
+                world.enemyUnits[i].updateMovement(scene, world);
+            else
+            {
+                world.enemyUnits.splice(i, 1);
+                i--;
+            }
     }
 
     #menuInit(scene)
@@ -57,11 +70,11 @@ class World
         this.#overlayImage.displayOriginX=0;
         this.#overlayImage.displayOriginY=0;
         this.#overlayImage.setScale(GLOBALSPRITESCALE);
-        this.#overlayImage.setDepth(100);
+        this.#overlayImage.setDepth(250);
         
         this.#resourceTextField=scene.add.text(1670, 1036, this.resource.toString(), {fontFamily: "mainFont", fontSize: "48px"});
         this.#resourceTextField.displayOriginY=this.#resourceTextField.height/2;
-        this.#resourceTextField.setDepth(101);
+        this.#resourceTextField.setDepth(251);
     }
 
     #fillArrays(scene)
@@ -268,6 +281,13 @@ class World
         if(this.unitArray[x][y]!=null)
         {
             this.existingUnits.splice(this.existingUnits.indexOf(this.unitArray[x][y]), 1);
+            
+            if(this.unitArray[x][y] instanceof FriendlyUnit)
+                this.friendlyUnits.splice(this.friendlyUnits.indexOf(this.unitArray[x][y]), 1);
+
+            if(this.unitArray[x][y] instanceof EnemyUnit)
+                this.enemyUnits.splice(this.enemyUnits.indexOf(this.unitArray[x][y]), 1);
+         
             this.unitArray[x][y].delete();
             this.unitArray[x][y]=null;
         }
@@ -283,6 +303,9 @@ class World
         if(x1>=this.width || y1>=this.height || x1<0 ||y1<0||
             x2>=this.width || y2>=this.height || x2<0 ||y2<0)
             return;
+
+        if(this.unitArray[x2][y2]!=null)
+            this.unitArray[x2][y2].delete();
 
         this.unitArray[x2][y2]=this.unitArray[x1][y1];
         this.unitArray[x1][y1]=null;
@@ -426,6 +449,12 @@ class World
     inBounds(x, y)
     {
         return (x>=0&&y>=0&&x<this.width&&y<this.height);
+    }
+
+    spawnWave(strength)
+    {
+        let wavePoints=strength*strength+3;
+
     }
 }
 

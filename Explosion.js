@@ -13,6 +13,25 @@ class Explosion extends MapBlock
     }
 }
 
+class HitVisual extends MapBlock
+{
+    #rotation;
+
+    constructor(scene, mapX, mapY, screenX, screenY, rotation)
+    {
+        super(scene, 'hit_anim', 'hit', mapX, mapY, screenX, screenY, true);
+        this.#rotation=rotation;
+    }
+    
+    activate(scene)
+    {
+        super.activate(scene);
+        this.mySprite.setDepth(this.mapY*3+2);
+       // this.mySprite.setRotation(this.#rotation);
+        this.mySprite.on('animationcomplete', function(unit){return function() {unit.delete();};}(this));
+    }
+}
+
 class Corpse extends MapUnit
 {
     #corpseType;

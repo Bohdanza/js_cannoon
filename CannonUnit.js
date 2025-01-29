@@ -7,6 +7,23 @@ class Cannon extends FriendlyUnit
         this.actionPoints=100000;
     }
 
+    damageUnit(scene, world, power)
+    {
+        super.damageUnit(scene, world, power);
+
+        if(this.currentHP<0)
+        {
+            for(let i=-1; i<2; i++)
+                for(let j=-1; j<1; j++)
+                {
+                    let rlc=world.mapToScreen(this.mapX+i, this.mapY+j);
+                    let crp=new Corpse(scene, this.mapX+i, this.mapY+j, rlc[0], rlc[1], world, 0);
+                    crp.activate(scene);
+                    world.changeUnit(scene, this.mapX+i, this.mapY+j, crp);
+                }
+        }
+    }
+
     #walkAction(scene, world, x, y)
     {}
 

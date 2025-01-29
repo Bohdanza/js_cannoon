@@ -34,15 +34,15 @@ class MapUnit extends MapObject
         this.actionPoints=speed;
     }
 
-    update()
+    update(world)
     {
-        this.#updateQueuedPlaces();
+        this.updateQueuedPlaces(world);
     }
 
     #movingToPlace=false;
     #movingAnimSpeed=7;
 
-    #updateQueuedPlaces()
+    updateQueuedPlaces(world)
     {
         if(this.#movingToPlace)
         {
@@ -64,7 +64,8 @@ class MapUnit extends MapObject
             if(this.screenX==this.queuedPlaces[this.queuedPlaces.length-1][0]&&
                 this.screenY==this.queuedPlaces[this.queuedPlaces.length-1][1])
             {
-                this.mySprite.setDepth(this.queuedPlaces[this.queuedPlaces.length-1][1]*3+1);
+                let qpd=world.screenToMap(0, this.queuedPlaces[this.queuedPlaces.length-1][1]);
+                this.mySprite.setDepth(qpd[1]*3+1);
                 this.#movingToPlace=false;
                 this.queuedPlaces.pop();
             }
@@ -72,10 +73,12 @@ class MapUnit extends MapObject
             this.updateSpriteCoords();
         }
 
-        if(!this.#movingToPlace && this.queuedPlaces.length>0)
+        if(!this.#movingToPlace)
         {
-            this.#movingToPlace=true;
-            this.mySprite.setDepth(Math.max(this.mySprite.depth, this.queuedPlaces[this.queuedPlaces.length-1][1]*3+1));
+            if(this.queuedPlaces.length>0)
+                this.#movingToPlace=true;
+            else
+                this.mySprite.setDepth(this.mapY*3+1);
         }
     }
 
@@ -93,7 +96,7 @@ class MapUnit extends MapObject
 
         this.selectionFrame=scene.add.sprite(this.screenX, this.screenY, this.selectionFrameName);
 
-        this.selectionFrame.setDepth(99);
+        this.selectionFrame.setDepth(200);
         this.selectionFrame.displayOriginX=this.selectionFrame.width/2;
         this.selectionFrame.displayOriginY=this.selectionFrame.height-1;
         this.selectionFrame.setScale(GLOBALSPRITESCALE);   
@@ -159,11 +162,11 @@ class MapUnit extends MapObject
 
     transferTo(world, x, y, pathArray)
     {
-        this.queuedPlaces=pathArray;
+        for(let i=0; i<pathArray.length; i++)
+            pathArray[i]=world.mapToScreen(pathArray[i][0], pathArray[i][1]);
 
-        for(let i=0; i<this.queuedPlaces.length; i++)
-            this.queuedPlaces[i]=world.mapToScreen(this.queuedPlaces[i][0], this.queuedPlaces[i][1]);
-        
+        this.queuedPlaces=pathArray.concat(this.queuedPlaces);
+
         world.transferUnit(this.mapX, this.mapY, x, y);
         this.mapX=x; this.mapY=y;
         this.#movingToPlace=true;

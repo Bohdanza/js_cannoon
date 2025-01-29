@@ -17,6 +17,20 @@ class FriendlyUnit extends MapUnit
             }(scene), this);
     }
 
+    damageUnit(scene, world, power)
+    {
+        this.currentHP-=power;
+
+        if(this.currentHP<0)
+        {
+            world.deleteUnit(scene, this.mapX, this.mapY);
+
+            let crp=new Corpse(scene, this.mapX, this.mapY, this.screenX, this.screenY, world, 0);
+            crp.activate(scene);
+            world.changeUnit(scene, this.mapX, this.mapY, crp);
+        }
+    }
+
     #click(scene, pointer)
     {
         if(pointer.rightButtonDown()&&this.selected)

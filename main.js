@@ -49,6 +49,8 @@ function preload ()
 
     this.load.spritesheet('corpse', 'Content/corpse.png', {frameWidth: 8, frameHeight: 8});
     this.load.spritesheet('corpse_selected', 'Content/corpse_select.png', {frameWidth: 10, frameHeight: 10});
+    
+    this.load.spritesheet('hit', 'Content/hit.png', {frameWidth: 8, frameHeight: 8});
 
     this.load.image('menu_overlay', 'Content/menu_overlay.png');
 }
@@ -213,6 +215,16 @@ function create()
             frames: this.anims.generateFrameNumbers('corpse_selected', {frames:[1]}),
             frameRate: 8,
             repeat:-1
+        }
+    );
+
+    this.anims.create
+    (
+        {
+            key:'hit_anim',
+            frames: 'hit',
+            frameRate: 8,
+            repeat:0
         }
     );
 

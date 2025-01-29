@@ -2,6 +2,7 @@ const GLOBALSPRITESCALE = 4;
 
 class MapObject
 {
+    alive=true;
     mapX; mapY;
     screenX; screenY;
     mySprite;
@@ -43,7 +44,7 @@ class MapObject
         this.mySprite.y=this.screenY;
     }
 
-    update()
+    update(world)
     {
         throw new Error("Abstract class can't be instantiated");
     }
@@ -61,6 +62,7 @@ class MapObject
 
     delete()
     {
+        this.alive=false;
         this.mySprite.destroy(true);
      //   this.destroy(true);
     }
