@@ -104,7 +104,7 @@ function create()
     (
         {
             key:'crystal',
-            frames: this.anims.generateFrameNumbers('crystal', {frames:[0,1,2]}),
+            frames: 'crystal',
             frameRate: 8,
             repeat:-1
         }

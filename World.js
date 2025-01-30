@@ -8,7 +8,7 @@ class World
     unitArray=[];
     collisionArray=[];
     currentWave=0;
-    resource=100;
+    resource=0;
     #resourceTextField;
     selectedUnit=null;
     friendlyUnits=[];
