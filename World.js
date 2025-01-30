@@ -21,6 +21,9 @@ class World
     turnsSinceWave=100;
     currentWaveStrength=0;
 
+    #kills=0;
+    #killsTextField;    
+
     //scene is essentially used to add new gameobjects to it.
     //May be implemented by world extending a scene, but that's not a big difference
     constructor(width, height, scene)
@@ -83,6 +86,13 @@ class World
 
         this.#resourceTextField.setText(this.resource.toString());
     }
+    
+    increaseKills(amount)
+    {
+        this.#kills+=amount;
+
+        this.#killsTextField.setText(this.#kills.toString());
+    }
 
     stopAgression()
     {
@@ -125,6 +135,10 @@ class World
         this.#resourceTextField=scene.add.text(1680, 1036, this.resource.toString(), {fontFamily: "mainFont", fontSize: "48px"});
         this.#resourceTextField.displayOriginY=this.#resourceTextField.height/2;
         this.#resourceTextField.setDepth(251);
+        
+        this.#killsTextField=scene.add.text(1680, 956, this.#kills.toString(), {fontFamily: "mainFont", fontSize: "48px"});
+        this.#killsTextField.displayOriginY=this.#killsTextField.height/2;
+        this.#killsTextField.setDepth(251);
     }
 
     #fillArrays(scene)

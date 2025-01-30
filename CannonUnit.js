@@ -2,7 +2,7 @@ class Cannon extends FriendlyUnit
 {
     constructor(scene, mapX, mapY, screenX, screenY, world)
     {
-        super(scene, "cannon", mapX, mapY, screenX, screenY, false, "cannon_selected", 50000, 50000, 1, 5, 7, world,
+        super(scene, "cannon", mapX, mapY, screenX, screenY, false, "cannon_selected", 500, 500, 1, 5, 7, world,
             "Cannon");
         this.selectedAction=this.#shootAction;
         this.actionPoints=1;
@@ -12,7 +12,7 @@ class Cannon extends FriendlyUnit
     {
         super.damageUnit(scene, world, power);
 
-        if(this.currentHP<0)
+        if(this.currentHP<=0)
         {
             for(let i=-1; i<2; i++)
                 for(let j=-1; j<1; j++)

@@ -14,9 +14,11 @@ class EnemyUnit extends MapUnit
     damageUnit(scene, world, power)
     {
         this.currentHP-=power;
+        this.updateDescription();
 
-        if(this.currentHP<0)
+        if(this.currentHP<=0)
         {
+            world.increaseKills(1);
             world.deleteUnit(scene, this.mapX, this.mapY);
 
             let crp=new Corpse(scene, this.mapX, this.mapY, this.screenX, this.screenY, world, 1);

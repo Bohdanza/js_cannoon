@@ -67,8 +67,6 @@ class MapUnit extends MapObject
             if(this.screenX==this.queuedPlaces[this.queuedPlaces.length-1][0]&&
                 this.screenY==this.queuedPlaces[this.queuedPlaces.length-1][1])
             {
-                let qpd=world.screenToMap(0, this.queuedPlaces[this.queuedPlaces.length-1][1]);
-                this.mySprite.setDepth(qpd[1]*3+1);
                 this.#movingToPlace=false;
                 this.queuedPlaces.pop();
             }
@@ -79,7 +77,11 @@ class MapUnit extends MapObject
         if(!this.#movingToPlace)
         {
             if(this.queuedPlaces.length>0)
+            {
                 this.#movingToPlace=true;
+                let qpd=world.screenToMap(0, this.queuedPlaces[this.queuedPlaces.length-1][1]);
+                this.mySprite.setDepth(qpd[1]*3+1);
+            }
             else
                 this.mySprite.setDepth(this.mapY*3+1);
         }
@@ -203,14 +205,21 @@ class MapUnit extends MapObject
 
         world.transferUnit(this.mapX, this.mapY, x, y);
         this.mapX=x; this.mapY=y;
-        this.#movingToPlace=true;
+        //this.#movingToPlace=true;
+    }
+
+    changePower(newPower)
+    {
+        this.power=newPower;
+        this.updateDescription();
     }
 
     damageUnit(scene, world, power)
     {
         this.currentHP-=power;
+        this.updateDescription();
 
-        if(this.currentHP<0)
+        if(this.currentHP<=0)
         {
             //TODO: corpses
             world.deleteUnit(scene, this.mapX, this.mapY);

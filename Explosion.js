@@ -39,12 +39,16 @@ class Corpse extends MapUnit
     constructor(scene, mapX, mapY, screenX, screenY, world, corpseType)
     {
         let tmpname='mech_';
+        let tmpname2="Debris";
 
         if(corpseType==1)
+        {
             tmpname="bio_";
+            tmpname2="Corpse";
+        }
 
         super(scene, tmpname+"corpse", mapX, mapY, screenX, screenY, true, tmpname+'corpse_selection',
-            1, 1, 0, 0, 0, true, world, "Corpse");
+            1, 1, 0, 0, 0, true, world, tmpname2);
         
         this.#corpseType=corpseType;
     }
@@ -61,7 +65,7 @@ class Corpse extends MapUnit
 
         this.selectionFrame=scene.add.sprite(this.screenX, this.screenY, 'corpse_selected');
 
-        this.selectionFrame.setDepth(99);
+        this.selectionFrame.setDepth(249);
         this.selectionFrame.displayOriginX=this.selectionFrame.width/2;
         this.selectionFrame.displayOriginY=this.selectionFrame.height-1;
         this.selectionFrame.setScale(GLOBALSPRITESCALE);   

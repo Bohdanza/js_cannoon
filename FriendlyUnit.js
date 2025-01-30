@@ -20,8 +20,9 @@ class FriendlyUnit extends MapUnit
     damageUnit(scene, world, power)
     {
         this.currentHP-=power;
+        this.updateDescription();
 
-        if(this.currentHP<0)
+        if(this.currentHP<=0)
         {
             world.deleteUnit(scene, this.mapX, this.mapY);
 
