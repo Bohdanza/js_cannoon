@@ -27,16 +27,22 @@ var config =
 
 function preload ()
 {
+    this.load.spritesheet('crystal', 'Content/crystal.png', {frameWidth: 8, frameHeight: 8});
     this.load.spritesheet('ground', 'Content/ground.png', {frameWidth: 8, frameHeight: 8});
     this.load.spritesheet('water', 'Content/water.png', {frameWidth: 8, frameHeight: 8});
     this.load.spritesheet('rock', 'Content/rock.png', {frameWidth: 8, frameHeight: 12});
-    this.load.spritesheet('eye', 'Content/eye.png', {frameWidth: 6, frameHeight: 8});
-    this.load.spritesheet('eye_selected', 'Content/eye_select.png', {frameWidth: 8, frameHeight: 10});
     this.load.spritesheet('explosion', 'Content/explosion.png', {frameWidth: 8, frameHeight: 8});
     this.load.spritesheet('waterlines', 'Content/water_borders.png', {frameWidth: 8, frameHeight: 8});
 
     this.load.spritesheet('cannon', 'Content/cannon.png', {frameWidth: 22, frameHeight: 24});
     this.load.spritesheet('cannon_selected', 'Content/cannon_select.png', {frameWidth: 24, frameHeight: 26});
+    
+    this.load.spritesheet('miner', 'Content/miner.png', {frameWidth: 8, frameHeight: 8});
+    this.load.spritesheet('miner_selected', 'Content/miner_select.png', {frameWidth: 10, frameHeight: 10});
+    this.load.spritesheet('spike', 'Content/spike.png', {frameWidth: 8, frameHeight: 8});
+    this.load.spritesheet('spike_selected', 'Content/spike_select.png', {frameWidth: 10, frameHeight: 10});
+    this.load.spritesheet('bait', 'Content/bait.png', {frameWidth: 6, frameHeight: 8});
+    this.load.spritesheet('bait_selected', 'Content/bait_select.png', {frameWidth: 8, frameHeight: 10});
 
     this.load.spritesheet('magi', 'Content/magi.png', {frameWidth: 8, frameHeight: 8});
     this.load.spritesheet('magi_selected', 'Content/magi_select.png', {frameWidth: 10, frameHeight: 10});
@@ -93,6 +99,16 @@ function create()
                 repeat:-1
             }
         );
+
+    this.anims.create
+    (
+        {
+            key:'crystal',
+            frames: this.anims.generateFrameNumbers('crystal', {frames:[0,1,2]}),
+            frameRate: 8,
+            repeat:-1
+        }
+    );
 
     this.anims.create
     (
@@ -154,7 +170,7 @@ function create()
         }
     );
 
-    let unitNames=['magi', 'dino', 'cauldron', 'hound'];
+    let unitNames=['magi', 'dino', 'cauldron', 'hound', 'spike', 'miner', 'bait'];
 
     for(let i=0; i<unitNames.length; i++)
     {

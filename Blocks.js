@@ -1,3 +1,11 @@
+class Crystal extends MapBlock
+{
+    constructor(scene, mapX, mapY, screenX, screenY)
+    {
+        super(scene, 'crystal', 'crystal', mapX, mapY, screenX, screenY, true);
+    }
+}
+
 class Ground extends MapBlock
 {
     constructor(scene, mapX, mapY, screenX, screenY)

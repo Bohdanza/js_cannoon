@@ -8,14 +8,14 @@ class World
     unitArray=[];
     collisionArray=[];
     currentWave=0;
-    resource=0;
+    resource=100;
     #resourceTextField;
     selectedUnit=null;
     friendlyUnits=[];
     enemyUnits=[];
     existingUnits=[];
 
-    agressivePhase=false;
+    activePhase=false;
     stopCalls=0;
 
     turnsSinceWave=100;
@@ -63,7 +63,7 @@ class World
             
             world.turnsSinceWave++;
 
-            if(world.turnsSinceWave>20)
+            if(world.turnsSinceWave>15)
             {
                 world.turnsSinceWave=0;
                 
@@ -76,7 +76,6 @@ class World
             world.processEnemies(scene, world);
 
             world.stopAgression();
-            this.increaseResource(1);
         }
     }
 
@@ -101,8 +100,13 @@ class World
         if(this.stopCalls>=this.enemyUnits.length+1)
         {
             this.activePhase=false;
+            this.increaseResource(1);
+
             for(let i=0; i<this.friendlyUnits.length; i++)
+            {
                 this.friendlyUnits[i].changeActionPoints(this.friendlyUnits[i].speed);
+                this.friendlyUnits[i].updateOnTurn(this);
+            }
         }
     }
 
@@ -192,6 +196,8 @@ class World
             this.#generateLake(scene, randomInt(0, this.width), cy, cy+randomInt(3, 10), 1, 15);
         }
 
+        this.#generateCrystals(scene, 5, 5);
+
         for(let i=0; i<this.width; i++)
             for(let j=3; j<this.height; j++)
                 if(this.terrainArray[i][j] instanceof Water)
@@ -200,7 +206,7 @@ class World
         this.#addCannon(scene);
     }
 
-    #createUnit(scene, unit, friend)
+    createUnit(scene, unit, friend)
     {
         this.existingUnits.push(unit);
 
@@ -228,6 +234,37 @@ class World
         this.changeUnit(scene, neu.mapX+1, neu.mapY-1, neu);
         
         neu.activate(scene);
+    }
+
+    #generateCrystals(scene, crystalNumber, startCoord)
+    {
+        let step=~~((this.height-startCoord*2)/crystalNumber);
+
+        for(let i=startCoord; i<=this.height-startCoord; i+=step)
+        {
+            let xb=randomInt(0, this.width);
+            this.#placeCrystalOnLine(scene, xb, i);
+        }
+    }
+
+    #placeCrystalOnLine(scene, x, y)
+    {
+        let xc=x;
+
+        while((xc+1)%this.width!=x)
+        {
+            xc++;
+            xc%=this.width;
+
+            if(this.terrainArray[xc][y] instanceof Ground)
+            {
+                let pr=this.mapToScreen(xc, y);
+                this.#changeBlock(scene, xc, y, new Crystal(scene, xc, y, pr[0], pr[1]));
+                return;
+            }
+        }
+
+        return;
     }
 
     #generatePathway(scene, startX, startY, endX, endY)
@@ -564,7 +601,7 @@ class World
                 else
                     mc=new Dino(scene, xc, yc, rsc[0], rsc[1], this);
 
-                this.#createUnit(scene, mc, false);
+                this.createUnit(scene, mc, false);
                 mc.activate(scene);
             }
         }
@@ -597,7 +634,7 @@ class World
                 let rsc=this.mapToScreen(xc, yc);
                 mc=new Hound(scene, xc, yc, rsc[0], rsc[1], this);
     
-                this.#createUnit(scene, mc, false);
+                this.createUnit(scene, mc, false);
                 mc.activate(scene);
             }
         }

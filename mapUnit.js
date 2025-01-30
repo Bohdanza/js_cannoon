@@ -182,14 +182,14 @@ class MapUnit extends MapObject
 
     walkTo(scene, world, x, y)
     {
-        if(this.queuedPlaces.length>0)
+        if((this.mapX==x&&this.mapY==y)||this.queuedPlaces.length>0)
             return false;
 
-        let rs=world.findPath(this.mapX, this.mapY, x, y, this.speed);
+        let rs=world.findPath(this.mapX, this.mapY, x, y, this.actionPoints);
 
         if(rs[0])
         {
-            this.actionPoints-=rs[1];
+            this.changeActionPoints(this.actionPoints-rs[1]-1);
             this.transferTo(world, x, y, rs[2]);
         }
 
@@ -214,10 +214,21 @@ class MapUnit extends MapObject
         this.updateDescription();
     }
 
+    changeCurrentHP(newHP)
+    {
+        this.currentHP=newHP;
+        this.updateDescription();
+    }
+
+    changeSpeed(newSpeed)
+    {
+        this.speed=newSpeed;
+        this.updateDescription();
+    }
+
     damageUnit(scene, world, power)
     {
-        this.currentHP-=power;
-        this.updateDescription();
+        this.changeCurrentHP(this.currentHP-power);
 
         if(this.currentHP<=0)
         {

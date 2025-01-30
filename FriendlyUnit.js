@@ -44,6 +44,14 @@ class FriendlyUnit extends MapUnit
         this.walkTo(scene, world, rlccrd[0], rlccrd[1]);
     }
 
+    naturalPriority()
+    {
+        return 100;
+    }
+
+    updateOnTurn(world)
+    {}
+
     #noAction(scene, world, x, y)
     {}
 }

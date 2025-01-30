@@ -81,7 +81,7 @@ class EnemyUnit extends MapUnit
 
         for(let i=0; i<world.friendlyUnits.length; i++)
         {
-            let cpr=100;
+            let cpr=world.friendlyUnits[i].naturalPriority();
 
             cpr+=world.friendlyUnits[i].mapY;
             
