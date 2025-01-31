@@ -242,28 +242,27 @@ class World
 
         for(let i=startCoord; i<=this.height-startCoord; i+=step)
         {
-            let xb=randomInt(0, this.width);
-            this.#placeCrystalOnLine(scene, xb, i);
+            let xb=randomInt(1, 30);
+            this.#placeCrystalOnLine(scene, i, xb);
         }
     }
 
-    #placeCrystalOnLine(scene, x, y)
+    #placeCrystalOnLine(scene, y, cnt)
     {
-        let xc=x;
+        let x=0;
+        let cc=0;
 
-        while((xc+1)%this.width!=x)
+        while(cc<cnt)
         {
-            xc++;
-            xc%=this.width;
+            x++;
+            x%=this.width;
 
-            if(this.terrainArray[xc][y] instanceof Ground)
-            {
-                let pr=this.mapToScreen(xc, y);
-                this.#changeBlock(scene, xc, y, new Crystal(scene, xc, y, pr[0], pr[1]));
-                return;
-            }
+            if(this.terrainArray[x][y] instanceof Ground)
+                cc++;
         }
 
+        let pr=this.mapToScreen(x, y);
+        this.#changeBlock(scene, x, y, new Crystal(scene, x, y, pr[0], pr[1]));
         return;
     }
 

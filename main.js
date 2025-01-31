@@ -123,26 +123,6 @@ function create()
     this.anims.create
     (
         {
-            key:'eye_idle',
-            frames: this.anims.generateFrameNumbers('eye', {frames:[0, 1, 2]}),
-            frameRate: 8,
-            repeat:-1
-        }
-    );
-    
-    this.anims.create
-    (
-        {
-            key:'eye_selected_idle',
-            frames: this.anims.generateFrameNumbers('eye_selected', {frames:[0,1,2]}),
-            frameRate: 8,
-            repeat:-1
-        }
-    );
-    
-    this.anims.create
-    (
-        {
             key:'cannon_idle',
             frames: this.anims.generateFrameNumbers('cannon', {frames:[0]}),
             frameRate: 8,
